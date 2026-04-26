@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Recuperar Senha - Residencial Premium</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-box">
+        <h1>RESIDENCIAL PREMIUM</h1>
+        <p class="subtitle">Redefinição de Senha</p>
+
+        <form id="recuperarForm">
+            <div class="input-group">
+                <label>E-mail cadastrado</label>
+                <input type="email" id="email" placeholder="seu@email.com" required>
+            </div>
+            <div class="input-group">
+                <label>Nova Senha</label>
+                <input type="password" id="novaSenha" placeholder="Digite a nova senha" required>
+            </div>
+            <button type="submit">Atualizar Senha</button>
+        </form>
+
+        <div class="footer">
+            <p><a href="index.html">Voltar para o Login</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('recuperarForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const novaSenha = document.getElementById('novaSenha').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/api/recuperar-senha', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, novaSenha })
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert('Sucesso! Agora você já pode logar com a nova senha.');
+                    window.location.href = 'index.html';
+                } else {
+                    alert(result.erro);
+                }
+            } catch (error) {
+                alert('Erro ao conectar com o servidor.');
+            }
+        });
+    </script>
+</body>
+</html>

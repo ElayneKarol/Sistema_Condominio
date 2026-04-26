@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema Condomínio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-container">
+   <div class="login-box">
+    <img src="img/hotel-logo.avif" alt="Residencial Premium" class="logo-img">
+    
+    <h1>RESIDENCIAL PREMIUM</h1>
+    <p class="subtitle">Gestão Inteligente de Condomínio</p>
+
+    <form id="loginForm">
+        <div class="input-group">
+            <label>E-mail</label>
+            <input type="email" id="acesso" placeholder="Digite seu e-mail" required>
+        </div>
+
+        <div class="input-group">
+            <label>Senha</label>
+            <div class="password-wrapper">
+                <input type="password" id="senha" placeholder="Digite sua senha" required>
+                <a href="recuperar.html" class="forgot-link">Esqueceu sua senha?</a>
+            </div>
+        </div>
+
+        <button type="submit" id="btnEntrar">Entrar &rarr;</button>
+    </form>
+
+    <div class="footer">
+        <p>Ainda não é morador? <a href="cadastro.html">Solicite seu cadastro</a></p>
+    </div>
+</div>
+
+    <script>
+        // Aqui depois colocaremos o código para conversar com o seu Back-end!
+    </script>
+</body>
+</html>

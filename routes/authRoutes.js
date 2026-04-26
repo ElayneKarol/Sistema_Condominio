@@ -2,10 +2,13 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 
-// Rota para cadastrar um novo usuário (POST)
+// Linha 6 - Provavelmente o erro está aqui
 router.post('/cadastrar', authController.cadastrar);
 
-// Rota para fazer login (POST)
+// Rota de Login
 router.post('/login', authController.login);
+
+// Rota de Recuperar Senha
+router.put('/recuperar-senha', authController.recuperarSenha);
 
 module.exports = router;

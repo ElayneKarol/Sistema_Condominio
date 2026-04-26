@@ -3,16 +3,13 @@ const db = require('../config/db');
 
 // --- FUNÇÃO DE CADASTRAR ---
 const cadastrar = (req, res) => {
-    // 1. Pegamos os dados com os nomes corretos que vêm do Thunder Client
     const { nome, email, senha, cpf, telefone, endereco, perfil } = req.body;
 
     console.log(`Recebido pedido de cadastro para: ${nome}`);
 
-    // 2. A query SQL agora usa os nomes exatos das colunas da tabela Usuario
     const query = `INSERT INTO Usuario (nome, email, senha, cpf, telefone, endereco, perfil) 
                    VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
-    // 3. Enviamos os dados na mesma ordem
     db.query(query, [nome, email, senha, cpf, telefone, endereco, perfil], (err, results) => {
         if (err) {
             console.error('Erro ao cadastrar no banco:', err);
@@ -26,11 +23,61 @@ const cadastrar = (req, res) => {
     });
 };
 
-// --- FUNÇÃO DE LOGIN (Mocada por enquanto) ---
+// --- FUNÇÃO DE LOGIN ---
 const login = (req, res) => {
     const { email, senha } = req.body;
-    res.json({ sucesso: true, mensagem: "Rota de login acessada!", email });
-};
 
-// Exporta as duas funções
-module.exports = { cadastrar, login };
+    console.log(`Tentativa de login para: ${email}`);
+
+    const query = 'SELECT * FROM Usuario WHERE email = ?';
+
+    db.query(query, [email], (err, results) => {
+        if (err) {
+            console.error('Erro no banco:', err);
+            return res.status(500).json({ erro: 'Erro interno no servidor' });
+        }
+
+        if (results.length === 0) {
+            return res.status(401).json({ erro: 'E-mail ou senha incorretos' });
+        }
+
+        const usuario = results[0];
+
+        if (senha !== usuario.senha) {
+            return res.status(401).json({ erro: 'E-mail ou senha incorretos' });
+        }
+
+        res.json({
+            mensagem: 'Login realizado com sucesso!',
+            usuario: {
+                id: usuario.idUsuario,
+                nome: usuario.nome,
+                perfil: usuario.perfil
+            }
+        });
+    });
+}; // Fechamento correto da função login
+
+// --- FUNÇÃO DE RECUPERAR SENHA ---
+const recuperarSenha = (req, res) => {
+    const { email, novaSenha } = req.body;
+
+    const checkQuery = 'SELECT * FROM Usuario WHERE email = ?';
+    db.query(checkQuery, [email], (err, results) => {
+        if (err) return res.status(500).json({ erro: 'Erro no banco' });
+        if (results.length === 0) return res.status(404).json({ erro: 'E-mail não encontrado' });
+
+        const updateQuery = 'UPDATE Usuario SET senha = ? WHERE email = ?';
+        db.query(updateQuery, [novaSenha, email], (updateErr, updateResults) => {
+            if (updateErr) return res.status(500).json({ erro: 'Erro ao atualizar' });
+            
+            res.json({ mensagem: 'Senha alterada com sucesso!' });
+        });
+    });
+}; // Fechamento correto da função recuperarSenha
+
+module.exports = { 
+    login, 
+    cadastrar, 
+    recuperarSenha 
+};

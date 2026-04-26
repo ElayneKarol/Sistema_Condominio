@@ -8,6 +8,7 @@ const authRoutes = require('./routes/authRoutes');
 const app = express();
 app.use(cors());
 app.use(express.json()); 
+app.use(express.static('public'));
 
 // Avisa o servidor para usar as rotas de autenticação a partir do caminho '/api'
 app.use('/api', authRoutes);

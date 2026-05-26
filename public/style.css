@@ -98,3 +98,23 @@ button {
     text-decoration: none;
     font-weight: bold;
 }
+
+
+
+/* Oculta a mensagem de erro por padrão */
+.mensagem-erro {
+    color: red;
+    font-size: 0.9em;
+    display: none;
+}
+
+/* Quando o input for inválido, a borda fica vermelha */
+input:invalid {
+    border: 2px solid red;
+    outline: none;
+}
+
+/* Mostra a mensagem de erro somente quando o input estiver inválido */
+input:invalid + .mensagem-erro {
+    display: block;
+}

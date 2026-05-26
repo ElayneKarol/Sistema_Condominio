@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Reservas - Residencial Premium</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
+        body { background-color: #e5e7eb; display: flex; height: 100vh; overflow: hidden; }
+
+        /* --- SIDEBAR --- */
+        .sidebar { width: 280px; background-color: #0f172a; color: white; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 0; }
+        .profile-section { padding: 0 20px 30px 20px; border-bottom: 1px solid #1e293b; margin-bottom: 20px; }
+        .profile-section img { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 15px; border: 2px solid #3b82f6; }
+        .nav-links { display: flex; flex-direction: column; gap: 5px; padding: 0 15px; flex: 1; }
+        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #cbd5e1; text-decoration: none; border-radius: 10px; font-size: 15px; transition: 0.3s; gap: 15px; cursor: pointer;}
+        .nav-item:hover { background-color: #1e293b; color: white; }
+        .nav-item.active { background-color: #1e3a8a; color: white; border: 1px solid #3b82f6; }
+
+        /* --- ÁREA PRINCIPAL --- */
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .main-header { margin-bottom: 30px; }
+        .main-header h1 { color: #111827; font-size: 28px; }
+        .main-header p { color: #6b7280; margin-top: 5px; }
+
+        /* Grid de Áreas (Vem do Banco) */
+        .areas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .area-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .area-card:hover { transform: translateY(-5px); }
+        .area-image { width: 100%; height: 180px; background-color: #cbd5e1; background-size: cover; background-position: center; }
+        .area-info { padding: 20px; }
+        .area-info h3 { color: #1f2937; margin-bottom: 10px; }
+        .area-info p { color: #6b7280; font-size: 14px; line-height: 1.5; margin-bottom: 20px; }
+        .area-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f3f4f6; padding-top: 15px; }
+        .capacidade-badge { color: #059669; font-weight: bold; font-size: 14px; background: #d1fae5; padding: 4px 10px; border-radius: 12px; }
+        
+        .btn-reservar { background: #1e3a8a; color: white; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: bold; border: none; cursor: pointer; }
+        .btn-reservar:hover { background: #1e40af; }
+
+        /* --- TABELA MINHAS RESERVAS --- */
+        .table-container { background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background-color: #f9fafb; color: #4b5563; font-weight: 600; padding: 15px 20px; border-bottom: 1px solid #e5e7eb; }
+        td { padding: 15px 20px; border-bottom: 1px solid #e5e7eb; color: #1f2937; }
+        
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .badge-pendente { background: #fef3c7; color: #d97706; }
+        .badge-aprovada { background: #d1fae5; color: #059669; }
+        .badge-recusada { background: #fee2e2; color: #dc2626; }
+        .badge-cancelada { background: #f3f4f6; color: #4b5563; } /* Etiqueta cinza para as canceladas */
+
+        .btn-cancelar-reserva { background: #ef4444; color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; }
+        .btn-cancelar-reserva:hover { background: #dc2626; }
+
+        /* --- MODAL DE CALENDÁRIO --- */
+        .modal { display: none; position: fixed; z-index: 1000; inset: 0; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px); align-items: center; justify-content: center; }
+        .modal-content { background-color: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .close-modal { font-size: 28px; cursor: pointer; color: #6b7280; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 20px; }
+        .day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 14px; cursor: pointer; border: 1px solid #e5e7eb; transition: 0.2s; }
+        .day.occupied { background-color: #f3f4f6; color: #d1d5db; cursor: not-allowed; text-decoration: line-through; }
+        .day.free { background-color: #ecfdf5; color: #059669; font-weight: bold; }
+        .day.free:hover { background-color: #059669; color: white; }
+        .day.selected { background-color: #1e3a8a !important; color: white !important; }
+        .time-slots { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .time-btn { padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; background: white; cursor: pointer; font-size: 12px; text-align: center; }
+        .time-btn.selected { background: #1e3a8a; color: white; border-color: #1e3a8a; }
+        .btn-confirmar { width: 100%; background: #059669; color: white; padding: 15px; border-radius: 10px; border: none; font-weight: bold; margin-top: 25px; cursor: pointer; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div>
+            <div class="profile-section">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar">
+                <h2 id="nome-usuario">Olá, Morador</h2> <p>Painel de Serviços</p>
+            </div>
+
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-item"><span>🏠</span> Início</a>
+                <a class="nav-item active" id="btn-tab-nova" onclick="alternarAba('nova')"><span>📅</span> Nova Reserva</a>
+                <a class="nav-item" id="btn-tab-minhas" onclick="alternarAba('minhas')"><span>📄</span> Minhas Reservas</a>
+                <a href="perfil.html" class="nav-item"><span>👤</span> Meu Perfil</a>
+            </nav>
+        </div>
+        <div style="padding: 20px 15px;">
+            <a href="index.html" class="nav-item" onclick="localStorage.clear();"><span>🚪</span> Sair</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        
+        <div id="sessao-nova-reserva">
+            <header class="main-header">
+                <h1>Reserva de Áreas</h1>
+                <p>Escolha um espaço para o seu evento ou lazer</p>
+            </header>
+            
+            <div class="areas-grid" id="containerAreas">
+                <p style="color: #6b7280;">Buscando áreas disponíveis...</p>
+            </div>
+        </div>
+
+        <div id="sessao-minhas-reservas" style="display: none;">
+            <header class="main-header">
+                <h1>Minhas Reservas</h1>
+                <p>Acompanhe o estado das suas solicitações e efetue o cancelamento se necessário.</p>
+            </header>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Local</th>
+                            <th>Data da Reserva</th>
+                            <th>Horário</th>
+                            <th>Estado</th>
+                            <th>Ações</th> </tr>
+                    </thead>
+                    <tbody id="tabelaMinhasReservas">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="modalReserva" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h2 id="modal-titulo">Reservar Local</h2>
+                        <p style="color: #6b7280; font-size: 14px;">Selecione uma data</p>
+                    </div>
+                    <span class="close-modal" onclick="fecharModal()">&times;</span>
+                </div>
+
+                <div class="calendar-grid" id="calendar"></div>
+
+                <div class="reservation-details">
+                    <h3>Selecione o Horário:</h3>
+                    <div class="time-slots">
+                        <button class="time-btn" onclick="selectTime(this)">08:00 - 12:00</button>
+                        <button class="time-btn" onclick="selectTime(this)">13:00 - 17:00</button>
+                        <button class="time-btn" onclick="selectTime(this)">18:00 - 22:00</button>
+                    </div>
+                </div>
+
+                <button class="btn-confirmar" onclick="confirmarReserva()">Finalizar Solicitação</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // CAPTURA O ID REAL DO UTILIZADOR LOGADO (se não encontrar nenhum, usa o 1 como segurança)
+        const USUARIO_LOGADO_ID = Number(localStorage.getItem('usuarioId')) || 1; 
+
+        let areaSelecionadaId = null;
+        let diaSelecionado = "";
+        let horarioSelecionado = "";
+
+        window.onload = () => {
+            // Altera o nome na barra lateral para o utilizador correto
+            const nomeSalvo = localStorage.getItem('usuarioNome');
+            if (nomeSalvo) {
+                document.getElementById('nome-usuario').innerText = `Olá, ${nomeSalvo}`;
+            }
+
+            carregarAreasDisponiveis();
+            carregarMinhasReservas(); // Esta função agora usará o ID dinâmico correto!
+        };
+
+        function alternarAba(aba) {
+            if (aba === 'nova') {
+                document.getElementById('sessao-nova-reserva').style.display = 'block';
+                document.getElementById('sessao-minhas-reservas').style.display = 'none';
+                document.getElementById('btn-tab-nova').classList.add('active');
+                document.getElementById('btn-tab-minhas').classList.remove('active');
+                carregarAreasDisponiveis();
+            } else {
+                document.getElementById('sessao-nova-reserva').style.display = 'none';
+                document.getElementById('sessao-minhas-reservas').style.display = 'block';
+                document.getElementById('btn-tab-minhas').classList.add('active');
+                document.getElementById('btn-tab-nova').classList.remove('active');
+                carregarMinhasReservas(); 
+            }
+        }
+
+        async function carregarAreasDisponiveis() {
+            try {
+                const res = await fetch('http://localhost:3000/api/areas');
+                const areas = await res.json();
+                const container = document.getElementById('containerAreas');
+                container.innerHTML = ''; 
+
+                const disponiveis = areas.filter(a => a.status === 'DISPONIVEL');
+
+                if(disponiveis.length === 0) {
+                    container.innerHTML = '<p style="color: #dc2626; font-weight: bold;">Nenhuma área disponível para reserva no momento.</p>';
+                    return;
+                }
+
+                disponiveis.forEach(area => {
+                    const imgUrl = `https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=500&sig=${area.id}`;
+                    
+                    container.innerHTML += `
+                        <div class="area-card">
+                            <div class="area-image" style="background-image: url('${imgUrl}')"></div>
+                            <div class="area-info">
+                                <h3>${area.nome}</h3>
+                                <p>${area.descricao || 'Nenhuma descrição adicionada.'}</p>
+                                <div class="area-footer">
+                                    <span class="capacidade-badge">Até ${area.capacidade} pessoas</span>
+                                    <button class="btn-reservar" onclick="abrirReserva(${area.id}, '${area.nome}')">Reservar</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                console.error("Erro ao carregar áreas:", err);
+            }
+        }
+
+        async function carregarMinhasReservas() {
+            try {
+                const res = await fetch(`http://localhost:3000/api/reservas/usuario/${USUARIO_LOGADO_ID}`);
+                const reservas = await res.json();
+                const tbody = document.getElementById('tabelaMinhasReservas');
+                tbody.innerHTML = '';
+
+                if (reservas.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Você não possui histórico de reservas.</td></tr>';
+                    return;
+                }
+
+                reservas.forEach(reserva => {
+                    const dataFormatada = new Date(reserva.data_reserva).toLocaleDateString('pt-PT', {timeZone: 'UTC'});
+                    
+                    let badgeClass = '';
+                    if (reserva.status === 'PENDENTE') badgeClass = 'badge-pendente';
+                    else if (reserva.status === 'APROVADA') badgeClass = 'badge-aprovada';
+                    else if (reserva.status === 'RECUSADA') badgeClass = 'badge-recusada';
+                    else if (reserva.status === 'CANCELADA') badgeClass = 'badge-cancelada';
+
+                    // Só mostra o botão de cancelar se estiver Pendente ou Aprovada
+                    let acao = '-';
+                    if (reserva.status === 'PENDENTE' || reserva.status === 'APROVADA') {
+                        acao = `<button class="btn-cancelar-reserva" onclick="cancelarReserva(${reserva.id})">Cancelar</button>`;
+                    }
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${reserva.area_nome}</strong></td>
+                            <td>${dataFormatada}</td>
+                            <td>${reserva.horario}</td>
+                            <td><span class="badge ${badgeClass}">${reserva.status}</span></td>
+                            <td>${acao}</td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Erro ao carregar reservas:", err);
+            }
+        }
+
+        // --- FUNÇÃO PARA CANCELAR A RESERVA ---
+        async function cancelarReserva(id) {
+            if(!confirm("Tem a certeza que deseja cancelar esta reserva?")) return;
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/reservas/${id}/cancelar`, {
+                    method: 'PUT'
+                });
+
+                if (response.ok) {
+                    carregarMinhasReservas(); // Recarrega a tabela automaticamente para mostrar "CANCELADA"
+                } else {
+                    alert("Erro ao cancelar a reserva.");
+                }
+            } catch (err) {
+                console.error("Erro:", err);
+            }
+        }
+
+        function abrirReserva(id, nome) {
+            areaSelecionadaId = id;
+            document.getElementById('modal-titulo').innerText = "Reservar: " + nome;
+            document.getElementById('modalReserva').style.display = 'flex';
+            gerarCalendario();
+        }
+
+        function fecharModal() {
+            document.getElementById('modalReserva').style.display = 'none';
+            diaSelecionado = "";
+            horarioSelecionado = "";
+            document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+        }
+
+        function gerarCalendario() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+            
+            for (let i = 1; i <= 31; i++) {
+                const div = document.createElement('div');
+                div.innerText = i;
+                const ocupados = [5, 12, 19, 20]; 
+                
+                if (ocupados.includes(i)) {
+                    div.className = 'day occupied';
+                } else {
+                    div.className = 'day free';
+                    div.onclick = function() {
+                        document.querySelectorAll('.day').forEach(d => d.classList.remove('selected'));
+                        div.classList.add('selected');
+                        diaSelecionado = i;
+                    };
+                }
+                calendar.appendChild(div);
+            }
+        }
+
+        function selectTime(btn) {
+            document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            horarioSelecionado = btn.innerText;
+        }
+
+        async function confirmarReserva() {
+            if (!diaSelecionado || !horarioSelecionado) {
+                alert("Por favor, selecione o dia e o horário!");
+                return;
+            }
+
+            const mesAtual = new Date().getMonth() + 1;
+            const anoAtual = new Date().getFullYear();
+            const dataSQL = `${anoAtual}-${String(mesAtual).padStart(2, '0')}-${String(diaSelecionado).padStart(2, '0')}`;
+
+            const dados = {
+                usuario_id: USUARIO_LOGADO_ID,
+                area_id: areaSelecionadaId,
+                data_reserva: dataSQL,
+                horario: horarioSelecionado
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/api/reservas', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                if (response.ok) {
+                    alert("Reserva solicitada com sucesso! Aguarde a aprovação do administrador.");
+                    fecharModal();
+                    alternarAba('minhas'); 
+                } else {
+                    alert("Erro ao realizar reserva.");
+                }
+            } catch (err) {
+                console.error("Erro:", err);
+            }
+        }
+    </script>
+</body>
+</html>

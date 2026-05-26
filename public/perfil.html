@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Meu Perfil - Residencial Premium</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background-color: #e5e7eb; display: flex; height: 100vh; overflow: hidden; }
+
+        /* --- SIDEBAR --- */
+        .sidebar { width: 280px; background-color: #0f172a; color: white; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 0; }
+        .profile-section { padding: 0 20px 30px 20px; border-bottom: 1px solid #1e293b; margin-bottom: 20px; }
+        .profile-section img { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 15px; border: 2px solid #3b82f6; }
+        .nav-links { display: flex; flex-direction: column; gap: 5px; padding: 0 15px; flex: 1; }
+        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #cbd5e1; text-decoration: none; border-radius: 10px; font-size: 15px; transition: 0.3s; gap: 15px; }
+        .nav-item:hover { background-color: #1e293b; color: white; }
+        .nav-item.active { background-color: #1e3a8a; color: white; border: 1px solid #3b82f6; }
+
+        /* --- ÁREA PRINCIPAL --- */
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .main-header { margin-bottom: 30px; }
+        .main-header h1 { color: #111827; font-size: 28px; }
+        .main-header p { color: #6b7280; margin-top: 5px; }
+
+        /* --- FORMULÁRIO DE PERFIL --- */
+        .profile-card { background: white; max-width: 650px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 30px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group.full-width { grid-column: span 2; }
+        
+        label { font-size: 14px; font-weight: 600; color: #4b5563; }
+        
+        /* Alinhamento dos inputs bloqueados com botão lateral */
+        .input-group-row { display: flex; gap: 10px; align-items: center; }
+        .input-group-row input { flex: 1; }
+
+        input { padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px; background-color: #fff; color: #1f2937; width: 100%; }
+        input:disabled { background-color: #f3f4f6; color: #4b5563; cursor: not-allowed; font-weight: 500; }
+        
+        .btn-solicitar { background: #f3f4f6; color: #1e3a8a; border: 1px solid #d1d5db; padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .btn-solicitar:hover { background: #e5e7eb; color: #111827; }
+
+        .btn-salvar { background: #1e3a8a; color: white; padding: 12px 24px; border-radius: 8px; font-size: 15px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; width: 100%; }
+        .btn-salvar:hover { background: #1e40af; }
+
+        /* --- MODAL DE SOLICITAÇÃO --- */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(3px); }
+        .modal.ativo { display: flex; }
+        .modal-conteudo { background: white; padding: 30px; border-radius: 12px; width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .modal h3 { margin-bottom: 15px; color: #111827; }
+        .modal p { font-size: 14px; color: #6b7280; margin-bottom: 15px; }
+        .modal-acoes { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        .btn-fechar { background: #9ca3af; color: white; padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+        .btn-enviar { background: #10b981; color: white; padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div>
+            <div class="profile-section">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar">
+                <h2 id="nome-usuario">Olá, Morador</h2>
+                <p>Painel de Serviços</p>
+            </div>
+
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-item"><span>🏠</span> Início</a>
+                <a href="reservas.html" class="nav-item"><span>📅</span> Nova Reserva</a>
+                <a href="perfil.html" class="nav-item active"><span>👤</span> Meu Perfil</a>
+            </nav>
+        </div>
+        <div style="padding: 20px 15px;">
+            <a href="index.html" class="nav-item" onclick="localStorage.clear();"><span>🚪</span> Sair</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="main-header">
+            <h1>Meu Perfil</h1>
+            <p>Consulte os seus dados cadastrais. Para alterar informações restritas, envie uma solicitação ao síndico.</p>
+        </header>
+
+        <div class="profile-card">
+            <form id="perfilForm">
+                <div class="form-grid">
+                    
+                    <div class="form-group full-width">
+                        <label>Nome Completo</label>
+                        <div class="input-group-row">
+                            <input type="text" id="perfNome" disabled>
+                            <button type="button" class="btn-solicitar" onclick="abrirModalSolicitacao('Nome')">✏️ Solicitar Alteração</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>E-mail Cadastrado</label>
+                        <div class="input-group-row">
+                            <input type="email" id="perfEmail" disabled>
+                            <button type="button" class="btn-solicitar" onclick="abrirModalSolicitacao('Email')">✏️ Solicitar Alteração</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Bloco</label>
+                        <div class="input-group-row">
+                            <input type="text" id="perfBloco" disabled>
+                            <button type="button" class="btn-solicitar" onclick="abrirModalSolicitacao('Bloco')">✏️ Mudar</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Apartamento</label>
+                        <div class="input-group-row">
+                            <input type="text" id="perfApartamento" disabled>
+                            <button type="button" class="btn-solicitar" onclick="abrirModalSolicitacao('Apartamento')">✏️ Mudar</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width" style="margin-top: 10px; border-top: 1px solid #f3f4f6; padding-top: 20px;">
+                        <label>Telemóvel / Telefone (Alteração Direta)</label>
+                        <input type="text" id="perfTelefone" placeholder="Ex: 912 345 678">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Nova Senha (deixe em branco para não alterar)</label>
+                        <input type="password" id="perfSenha" placeholder="Digite uma nova senha se desejar mudar">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-salvar">Salvar Telefone e Senha</button>
+            </form>
+        </div>
+    </main>
+
+    <div class="modal" id="modalSolicitacao">
+        <div class="modal-conteudo">
+            <h3 id="modalTitulo">Solicitar Alteração</h3>
+            <p>Esta alteração precisa de ser validada pela administração do condomínio.</p>
+            
+            <div class="form-group">
+                <label id="modalLabelInput">Novo valor:</label>
+                <input type="text" id="modalNovoValor" placeholder="Introduza o dado correto...">
+            </div>
+
+            <div class="modal-acoes">
+                <button class="btn-fechar" onclick="fecharModalSolicitacao()">Cancelar</button>
+                <button class="btn-enviar" onclick="enviarSolicitacaoAlteracao()">Enviar ao Síndico</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const USUARIO_LOGADO_ID = Number(localStorage.getItem('usuarioId')) || 1;
+        let campoSelecionadoParaAlterar = "";
+
+        window.onload = async () => {
+            const nomeSalvo = localStorage.getItem('usuarioNome');
+            if (nomeSalvo) {
+                document.getElementById('nome-usuario').innerText = `Olá, ${nomeSalvo}`;
+            }
+
+            // Buscar informações do banco para exibir na tela (mesmo bloqueadas, elas aparecem)
+            try {
+                const res = await fetch(`http://localhost:3000/api/usuarios/${USUARIO_LOGADO_ID}`);
+                if (res.ok) {
+                    const dados = await res.json();
+                    document.getElementById('perfNome').value = dados.nome || '';
+                    document.getElementById('perfEmail').value = dados.email || '';
+                    document.getElementById('perfBloco').value = dados.bloco || '';
+                    document.getElementById('perfApartamento').value = dados.apartamento || '';
+                    document.getElementById('perfTelefone').value = dados.telefone || '';
+                }
+            } catch (err) {
+                console.error("Erro ao carregar dados do perfil:", err);
+            }
+        };
+
+        // --- FUNÇÕES DO MODAL DE SOLICITAÇÃO ---
+        function abrirModalSolicitacao(campo) {
+            campoSelecionadoParaAlterar = campo;
+            document.getElementById('modalTitulo').innerText = `Alterar Campo: ${campo}`;
+            document.getElementById('modalLabelInput').innerText = `Novo ${campo}:`;
+            document.getElementById('modalNovoValor').value = "";
+            document.getElementById('modalSolicitacao').classList.add('ativo');
+        }
+
+        function fecharModalSolicitacao() {
+            document.getElementById('modalSolicitacao').classList.remove('ativo');
+        }
+
+        async function enviarSolicitacaoAlteracao() {
+            const novoValor = document.getElementById('modalNovoValor').value;
+
+            if(!novoValor || novoValor.trim() === "") {
+                alert("Por favor, introduza o novo valor.");
+                return;
+            }
+
+            try {
+                const res = await fetch(`http://localhost:3000/api/usuarios/${USUARIO_LOGADO_ID}/solicitar-alteracao`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        campo: campoSelecionadoParaAlterar,
+                        novo_valor: novoValor
+                    })
+                });
+
+                if (res.ok) {
+                    alert(`Solicitação de mudança de ${campoSelecionadoParaAlterar} enviada com sucesso! Aguarde a aprovação do síndico.`);
+                    fecharModalSolicitacao();
+                } else {
+                    alert("Erro ao submeter a solicitação.");
+                }
+            } catch (erro) {
+                console.error("Erro no envio:", erro);
+            }
+        }
+
+        // Guardar alterações livres (Telefone e Senha)
+        document.getElementById('perfilForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const dadosAtualizados = {
+                telefone: document.getElementById('perfTelefone').value,
+                senha: document.getElementById('perfSenha').value
+            };
+
+            try {
+                const res = await fetch(`http://localhost:3000/api/usuarios/${USUARIO_LOGADO_ID}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dadosAtualizados)
+                });
+
+                if (res.ok) {
+                    alert("Dados de contacto/senha atualizados com sucesso!");
+                    document.getElementById('perfSenha').value = '';
+                } else {
+                    alert("Erro ao salvar alterações.");
+                }
+            } catch (err) {
+                console.error("Erro ao atualizar:", err);
+            }
+        });
+    </script>
+</body>
+</html>

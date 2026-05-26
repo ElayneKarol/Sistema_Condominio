@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel do Síndico - Residencial Premium</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
+        body {
+            background-color: #f3f4f6;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR ADMIN --- */
+        .sidebar {
+            width: 280px;
+            background-color: #111827; 
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 0;
+        }
+
+        .profile-section {
+            padding: 0 20px 30px 20px;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+
+        .profile-section img {
+            width: 60px; height: 60px; border-radius: 50%;
+            margin-bottom: 15px; border: 2px solid #10b981; 
+        }
+
+        .profile-section h2 { color: #10b981; } 
+
+        .nav-links { display: flex; flex-direction: column; gap: 5px; padding: 0 15px; flex: 1; }
+
+        .nav-item {
+            display: flex; align-items: center; padding: 12px 15px;
+            color: #cbd5e1; text-decoration: none; border-radius: 10px;
+            font-size: 15px; transition: 0.3s; gap: 15px;
+        }
+
+        .nav-item:hover { background-color: #374151; color: white; }
+        .nav-item.active { background-color: #064e3b; color: white; border: 1px solid #10b981; } 
+
+        /* --- ÁREA PRINCIPAL --- */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .main-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end;}
+        .main-header h1 { color: #111827; font-size: 28px; }
+        .main-header p { color: #6b7280; margin-top: 5px; }
+
+        /* Lista de Solicitações */
+        .solicitacao-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid #f59e0b; 
+        }
+
+        .solicitacao-info h3 { color: #1f2937; margin-bottom: 8px; font-size: 18px;}
+        .solicitacao-info p { color: #4b5563; font-size: 14px; margin-bottom: 4px; }
+        .solicitacao-info strong { color: #111827; }
+
+        /* Badges */
+        .badge-pendente {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .badge-cadastro { background: #e0e7ff; color: #4f46e5; }
+        .badge-reserva { background: #fef3c7; color: #d97706; }
+        .badge-alteracao { background: #fae8ff; color: #a21caf; }
+
+        .acoes { display: flex; gap: 10px; }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: 0.2s;
+        }
+
+        .btn-aprovar { background: #10b981; }
+        .btn-aprovar:hover { background: #059669; }
+        
+        .btn-recusar { background: #ef4444; }
+        .btn-recusar:hover { background: #dc2626; }
+
+        .mensagem-vazio {
+            text-align: center;
+            color: #6b7280;
+            padding: 40px;
+            font-size: 18px;
+            background: white;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div>
+            <div class="profile-section">
+                <img src="https://cdn-icons-png.flaticon.com/512/2206/2206368.png" alt="Admin">
+                <h2>Administração</h2>
+                <p>Painel de Controle</p>
+            </div>
+
+            <nav class="nav-links">
+                <a href="admin-dashboard.html" class="nav-item active"><span>🛎️</span> Pendências</a>
+                <a href="gerenciar_usuarios.html" class="nav-item"><span>👥</span> Moradores</a>
+                <a href="gerenciar_locais.html" class="nav-item"><span>📍</span> Locais e Áreas</a>
+                <a href="#" class="nav-item"><span>📢</span> Avisos</a>
+            </nav>
+        </div>
+        <div style="padding: 20px 15px;">
+            <a href="index.html" class="nav-item"><span>🚪</span> Sair</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="main-header">
+            <div>
+                <h1>Central de Aprovações</h1>
+                <p>Gerencie cadastros, reservas e alterações cadastrais pendentes.</p>
+            </div>
+        </div>
+
+        <div id="lista-pendencias">
+            <p>Carregando pendências...</p>
+        </div>
+    </main>
+
+    <script>
+        window.onload = carregarPendencias;
+
+        async function carregarPendencias() {
+            const container = document.getElementById('lista-pendencias');
+            
+            try {
+                const resposta = await fetch('http://localhost:3000/api/pendencias');
+                
+                // Lê primeiro como texto puro para evitar quebras se o servidor mandar HTML de erro
+                const textoResposta = await resposta.text();
+                let dados;
+                
+                try {
+                    dados = JSON.parse(textoResposta);
+                } catch (e) {
+                    // Se não for um JSON válido, mostra a resposta bruta (útil para ver erros do Node)
+                    container.innerHTML = `<div class="mensagem-vazio" style="color: #ef4444; text-align: left; border-left: 5px solid #ef4444;">
+                        <strong>⚠️ Resposta inesperada do Servidor:</strong><br>
+                        <pre style="background: #fee2e2; padding: 12px; margin-top: 10px; border-radius: 6px; font-family: monospace; overflow-x: auto;">${textoResposta}</pre>
+                    </div>`;
+                    return;
+                }
+
+                // Se o servidor respondeu um código de erro (como 500)
+                if (!resposta.ok) {
+                    container.innerHTML = `<div class="mensagem-vazio" style="color: #ef4444; text-align: left; border-left: 5px solid #ef4444;">
+                        <strong>⚠️ Erro no Banco de Dados (${resposta.status}):</strong><br>
+                        <pre style="background: #fee2e2; padding: 12px; margin-top: 10px; border-radius: 6px; font-family: monospace;">${dados.erro || 'Erro desconhecido'}</pre>
+                    </div>`;
+                    return;
+                }
+
+                container.innerHTML = ''; 
+
+                const totalPendencias = (dados.usuariosPendentes?.length || 0) + 
+                                       (dados.reservasPendentes?.length || 0) + 
+                                       (dados.alteracoesPendentes?.length || 0);
+
+                if (totalPendencias === 0) {
+                    container.innerHTML = `<div class="mensagem-vazio">🎉 Tudo limpo! Não há nenhuma solicitação pendente.</div>`;
+                    return;
+                }
+
+                // 1. NOVOS USUÁRIOS
+                if(dados.usuariosPendentes) {
+                    dados.usuariosPendentes.forEach(user => {
+                        container.innerHTML += `
+                            <div class="solicitacao-card" id="user-${user.id}">
+                                <div class="solicitacao-info">
+                                    <span class="badge-pendente badge-cadastro">Novo Cadastro</span>
+                                    <h3>Morador: ${user.nome}</h3>
+                                    <p><strong>Email:</strong> ${user.email}</p>
+                                    <p><strong>Endereço:</strong> ${user.endereco}</p>
+                                </div>
+                                <div class="acoes">
+                                    <button class="btn btn-aprovar" onclick="processarUsuario(${user.id}, 'ATIVO')">✔ Aprovar</button>
+                                    <button class="btn btn-recusar" onclick="processarUsuario(${user.id}, 'RECUSADO')">✖ Recusar</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                // 2. PEDIDOS DE RESERVAS
+                if(dados.reservasPendentes) {
+                    dados.reservasPendentes.forEach(reserva => {
+                        container.innerHTML += `
+                            <div class="solicitacao-card" id="reserva-${reserva.id}">
+                                <div class="solicitacao-info">
+                                    <span class="badge-pendente badge-reserva">Pedido de Reserva</span>
+                                    <h3>Área: ${reserva.area}</h3>
+                                    <p><strong>Morador:</strong> ${reserva.nome}</p>
+                                    <p><strong>Data/Hora:</strong> ${reserva.data_reserva} | ${reserva.horario}</p>
+                                </div>
+                                <div class="acoes">
+                                    <button class="btn btn-aprovar" onclick="processarReserva(${reserva.id}, 'APROVADA')">✔ Aprovar</button>
+                                    <button class="btn btn-recusar" onclick="processarReserva(${reserva.id}, 'RECUSADA')">✖ Recusar</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                // 3. ALTERAÇÕES DE PERFIL
+                if(dados.alteracoesPendentes) {
+                    dados.alteracoesPendentes.forEach(alt => {
+                        container.innerHTML += `
+                            <div class="solicitacao-card" id="alt-${alt.id}">
+                                <div class="solicitacao-info">
+                                    <span class="badge-pendente badge-alteracao">Alteração de Dados</span>
+                                    <h3>Morador: ${alt.nome} (${alt.endereco})</h3>
+                                    <p>Solicitou alterar o campo <strong>${alt.campo}</strong> para:</p>
+                                    <p style="background: #f3f4f6; padding: 6px 12px; border-radius: 6px; display: inline-block; font-weight: bold; color: #a21caf; margin-top: 5px;">${alt.novo_valor}</p>
+                                </div>
+                                <div class="acoes">
+                                    <button class="btn btn-aprovar" onclick="processarAlteracao(${alt.id}, 'aprovar')">✔ Aprovar</button>
+                                    <button class="btn btn-recusar" onclick="processarAlteracao(${alt.id}, 'recusar')">✖ Recusar</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+            } catch (erro) {
+                console.error("Erro crítico:", erro);
+                container.innerHTML = `<div class="mensagem-vazio" style="color: red;">❌ Erro crítico ao conectar com o servidor. Garanta que o backend está rodando na porta 3000.</div>`;
+            }
+        }
+
+        async function processarUsuario(id, status) {
+            const resposta = await fetch(`http://localhost:3000/api/usuarios/${id}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: status })
+            });
+            if (resposta.ok) carregarPendencias();
+            else alert('Erro ao atualizar usuário.');
+        }
+
+        async function processarReserva(id, status) {
+            const reply = await fetch(`http://localhost:3000/api/reservas/${id}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: status })
+            });
+            if (reply.ok) carregarPendencias();
+            else alert('Erro ao atualizar reserva.');
+        }
+
+        // Nova função para processar as aprovações de perfil direto do painel unificado
+        async function processarAlteracao(id, acao) {
+            const resposta = await fetch(`http://localhost:3000/api/alteracoes/${id}/${acao}`, {
+                method: 'PUT'
+            });
+            if (resposta.ok) {
+                carregarPendencias();
+            } else {
+                alert('Erro ao processar alteração de perfil.');
+            }
+        }
+    </script>
+</body>
+</html>

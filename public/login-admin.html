@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Acesso Administrativo - Residencial Premium</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-box">
+        <img src="img/hotel-logo.avif" alt="Residencial Premium" class="logo-img">
+        
+        <h1>ÁREA RESTRITA</h1>
+        <p class="subtitle">Acesso exclusivo para Síndico e Administração</p>
+
+        <form id="loginAdminForm">
+            <div class="input-group">
+                <label>E-mail Corporativo</label>
+                <input type="email" id="email" placeholder="admin@residencial.com" required>
+            </div>
+
+            <div class="input-group">
+                <label>Senha</label>
+                <input type="password" id="senha" placeholder="Digite sua senha" required>
+            </div>
+
+            <button type="submit" style="background-color: #111827;">Acessar Painel &rarr;</button>
+        </form>
+
+        <div class="footer">
+            <p><a href="index.html">&larr; Voltar para a área do Morador</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginAdminForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
+
+                const dados = await response.json();
+
+                if (response.ok) {
+                    // VERIFICAÇÃO DE SEGURANÇA: Checa se quem logou é realmente Admin ou Síndico
+                    if (dados.usuario.perfil === 'ADMIN' || dados.usuario.perfil === 'SINDICO') {
+                        alert(`Bem-vindo, ${dados.usuario.nome}! Abrindo painel administrativo...`);
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        alert('Acesso negado: Este e-mail pertence a um Morador. Por favor, use a tela inicial.');
+                        window.location.href = 'index.html';
+                    }
+                } else {
+                    alert(dados.erro || 'Erro ao fazer login');
+                }
+            } catch (error) {
+                alert('Erro ao conectar com o servidor.');
+            }
+        });
+    </script>
+</body>
+</html>

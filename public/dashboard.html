@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel do Morador - Residencial Premium</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        body {
+            background-color: #e5e7eb;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- MENU LATERAL (SIDEBAR) --- */
+        .sidebar {
+            width: 280px;
+            background-color: #0f172a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 0;
+        }
+
+        .profile-section {
+            padding: 0 20px 30px 20px;
+            border-bottom: 1px solid #1e293b;
+            margin-bottom: 20px;
+        }
+
+        .profile-section img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 2px solid #3b82f6;
+        }
+
+        .profile-section h2 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .profile-section p {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 0 15px;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: 0.3s;
+            gap: 15px;
+        }
+
+        .nav-item:hover {
+            background-color: #1e293b;
+            color: white;
+        }
+
+        .nav-item.active {
+            background-color: #1e3a8a;
+            color: white;
+            border: 1px solid #3b82f6;
+        }
+
+        .logout-btn {
+            margin: 0 15px;
+            border-top: 1px solid #1e293b;
+            padding-top: 20px;
+        }
+
+        /* --- ÁREA PRINCIPAL (AVISOS) --- */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .main-header {
+            margin-bottom: 30px;
+        }
+
+        .main-header h1 {
+            color: #111827;
+            font-size: 28px;
+        }
+
+        .main-header p {
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .avisos-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .aviso-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .aviso-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge.info {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .aviso-date {
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+        .aviso-card h3 {
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .aviso-card p {
+            color: #4b5563;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div>
+            <div class="profile-section">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar">
+            <h2 id="nome-usuario">Olá, Ricardo</h2> <p>Painel de Serviços</p>
+        </div>
+
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-item active">
+                    <span>🏠</span> Início
+                </a>
+                <a href="reservas.html" class="nav-item">
+                    <span>📅</span> Reservas
+                </a>
+                <a href="perfil.html" class="nav-item">
+                    <span>👤</span> Meu Perfil
+                </a>
+            </nav>
+        </div>
+
+        <div class="logout-btn">
+            <a href="#" class="nav-item" onclick="sair()">
+                <span>🚪</span> Sair
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="main-header">
+            <h1>Mural de Avisos</h1>
+            <p>Fique por dentro do que acontece no Residencial Premium</p>
+        </header>
+
+        <div class="avisos-list">
+            <div class="aviso-card">
+                <div class="aviso-header">
+                    <span class="badge">Manutenção</span>
+                    <span class="aviso-date">Hoje, 08:30</span>
+                </div>
+                <h3>Limpeza da Caixa D'água</h3>
+                <p>Informamos que amanhã haverá interrupção no fornecimento de água das 08h às 12h para limpeza preventiva obrigatória de todas as caixas d'água dos blocos.</p>
+            </div>
+
+            <div class="aviso-card">
+                <div class="aviso-header">
+                    <span class="badge info">Informativo</span>
+                    <span class="aviso-date">Ontem, 14:15</span>
+                </div>
+                <h3>Nova regra para a Piscina</h3>
+                <p>Prezados moradores, lembramos que o uso da piscina aos finais de semana agora requer agendamento prévio através do sistema para evitarmos superlotação.</p>
+            </div>
+
+             <div class="aviso-card">
+                <div class="aviso-header">
+                    <span class="badge info">Informativo</span>
+                    <span class="aviso-date">10 de Maio</span>
+                </div>
+                <h3>Dedetização das Áreas Comuns</h3>
+                <p>A dedetização semestral foi concluída com sucesso nas áreas de lazer, garagem e hall de entrada dos blocos A e B.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Executa automaticamente quando o morador entra no painel
+        window.onload = () => {
+            const nomeSalvo = localStorage.getItem('usuarioNome');
+            if (nomeSalvo) {
+                document.getElementById('nome-usuario').innerText = `Olá, ${nomeSalvo}`;
+            }
+        };
+
+        function sair() {
+            localStorage.clear(); // Limpa as credenciais por segurança ao deslogar
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

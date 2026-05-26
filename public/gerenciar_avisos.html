@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerir Avisos - Administração</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
+        body { background-color: #f3f4f6; display: flex; height: 100vh; overflow: hidden; }
+
+        /* --- SIDEBAR ADMIN --- */
+        .sidebar { width: 280px; background-color: #111827; color: white; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 0; }
+        .profile-section { padding: 0 20px 30px 20px; border-bottom: 1px solid #374151; margin-bottom: 20px; }
+        .profile-section img { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 15px; border: 2px solid #10b981; }
+        .profile-section h2 { color: #10b981; } 
+        .nav-links { display: flex; flex-direction: column; gap: 5px; padding: 0 15px; flex: 1; }
+        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #cbd5e1; text-decoration: none; border-radius: 10px; font-size: 15px; transition: 0.3s; gap: 15px; }
+        .nav-item:hover { background-color: #374151; color: white; }
+        .nav-item.active { background-color: #064e3b; color: white; border: 1px solid #10b981; } 
+
+        /* --- ÁREA PRINCIPAL --- */
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .main-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; }
+        .main-header h1 { color: #111827; font-size: 28px; }
+        .main-header p { color: #6b7280; margin-top: 5px; }
+        
+        .btn-novo { background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; font-weight: bold; text-decoration: none; border: none; cursor: pointer; transition: 0.2s; }
+        .btn-novo:hover { background: #059669; }
+
+        /* --- MURAL DE AVISOS --- */
+        .avisos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .aviso-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); position: relative; }
+        .aviso-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .badge-info { background: #e0f2fe; color: #0284c7; }
+        .badge-alerta { background: #fef3c7; color: #d97706; }
+        .badge-urgente { background: #fee2e2; color: #dc2626; }
+        .aviso-data { font-size: 12px; color: #9ca3af; }
+        .aviso-card h3 { color: #1f2937; margin-bottom: 10px; font-size: 18px; }
+        .aviso-card p { color: #4b5563; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+        
+        .btn-apagar { background: #ef4444; color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; border: none; cursor: pointer; width: 100%; transition: 0.2s; }
+        .btn-apagar:hover { background: #dc2626; }
+
+        /* --- MODAL NOVO AVISO --- */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
+        .modal.ativo { display: flex; }
+        .modal-conteudo { background: white; padding: 30px; border-radius: 12px; width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .modal h2 { margin-bottom: 20px; color: #111827; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 14px; font-weight: bold; color: #4b5563; margin-bottom: 5px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+        .modal-acoes { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        .btn-cancelar { background: #9ca3af; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+        .btn-salvar { background: #10b981; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div>
+            <div class="profile-section">
+                <img src="https://cdn-icons-png.flaticon.com/512/2206/2206368.png" alt="Admin">
+                <h2>Administração</h2>
+                <p>Painel de Controlo</p>
+            </div>
+
+            <nav class="nav-links">
+                <a href="admin-dashboard.html" class="nav-item"><span>🛎️</span> Pendências</a>
+                <a href="gerenciar_usuarios.html" class="nav-item"><span>👥</span> Moradores</a>
+                <a href="gerenciar_locais.html" class="nav-item"><span>📍</span> Locais e Áreas</a>
+                <a href="gerenciar_avisos.html" class="nav-item active"><span>📢</span> Avisos</a>
+            </nav>
+        </div>
+        <div style="padding: 20px 15px;">
+            <a href="index.html" class="nav-item"><span>🚪</span> Sair</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="main-header">
+            <div>
+                <h1>Quadro de Avisos</h1>
+                <p>Comunique-se com os moradores do condomínio.</p>
+            </div>
+            <button class="btn-novo" onclick="abrirModal()">+ Novo Aviso</button>
+        </div>
+
+        <div class="avisos-grid" id="containerAvisos">
+            </div>
+    </main>
+
+    <div class="modal" id="modalAviso">
+        <div class="modal-conteudo">
+            <h2>Publicar Comunicado</h2>
+            
+            <div class="form-group">
+                <label>Título do Aviso</label>
+                <input type="text" id="avisoTitulo" placeholder="Ex: Limpeza da Piscina" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Tipo / Prioridade</label>
+                <select id="avisoTipo">
+                    <option value="Informativo">Informativo</option>
+                    <option value="Alerta">Alerta / Manutenção</option>
+                    <option value="Urgente">Urgente</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Mensagem</label>
+                <textarea id="avisoMensagem" placeholder="Escreva os detalhes aqui..." required></textarea>
+            </div>
+
+            <div class="modal-acoes">
+                <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+                <button class="btn-salvar" onclick="publicarAviso()">Publicar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = carregarAvisos;
+
+        // --- LISTAR AVISOS ---
+        async function carregarAvisos() {
+            try {
+                const response = await fetch('http://localhost:3000/api/avisos');
+                const avisos = await response.json();
+                const container = document.getElementById('containerAvisos');
+                container.innerHTML = '';
+
+                if (avisos.length === 0) {
+                    container.innerHTML = '<p style="color: #6b7280;">Nenhum aviso publicado no momento.</p>';
+                    return;
+                }
+
+                avisos.forEach(aviso => {
+                    const data = new Date(aviso.data_criacao).toLocaleDateString('pt-PT');
+                    
+                    let badgeClass = 'badge-info';
+                    if (aviso.tipo === 'Alerta') badgeClass = 'badge-alerta';
+                    else if (aviso.tipo === 'Urgente') badgeClass = 'badge-urgente';
+
+                    container.innerHTML += `
+                        <div class="aviso-card">
+                            <div class="aviso-header">
+                                <span class="badge ${badgeClass}">${aviso.tipo}</span>
+                                <span class="aviso-data">${data}</span>
+                            </div>
+                            <h3>${aviso.titulo}</h3>
+                            <p>${aviso.mensagem}</p>
+                            <button class="btn-apagar" onclick="apagarAviso(${aviso.id})">Apagar Aviso</button>
+                        </div>
+                    `;
+                });
+            } catch (erro) {
+                console.error("Erro ao carregar avisos:", erro);
+            }
+        }
+
+        // --- CRIAR NOVO AVISO ---
+        function abrirModal() {
+            document.getElementById('modalAviso').classList.add('ativo');
+        }
+
+        function fecharModal() {
+            document.getElementById('modalAviso').classList.remove('ativo');
+            // Limpa os campos
+            document.getElementById('avisoTitulo').value = '';
+            document.getElementById('avisoMensagem').value = '';
+            document.getElementById('avisoTipo').value = 'Informativo';
+        }
+
+        async function publicarAviso() {
+            const dados = {
+                titulo: document.getElementById('avisoTitulo').value,
+                tipo: document.getElementById('avisoTipo').value,
+                mensagem: document.getElementById('avisoMensagem').value
+            };
+
+            if (!dados.titulo || !dados.mensagem) {
+                alert("Por favor, preencha o título e a mensagem.");
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/avisos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                if (response.ok) {
+                    fecharModal();
+                    carregarAvisos();
+                } else {
+                    alert("Erro ao publicar o aviso.");
+                }
+            } catch (erro) {
+                console.error("Erro:", erro);
+            }
+        }
+
+        // --- APAGAR AVISO ---
+        async function apagarAviso(id) {
+            if (!confirm("Tem a certeza que deseja apagar este comunicado?")) return;
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/avisos/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    carregarAvisos();
+                } else {
+                    alert("Erro ao apagar aviso.");
+                }
+            } catch (erro) {
+                console.error("Erro:", erro);
+            }
+        }
+    </script>
+</body>
+</html>

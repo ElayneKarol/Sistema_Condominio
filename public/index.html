@@ -17,7 +17,8 @@
     <form id="loginForm">
         <div class="input-group">
             <label>E-mail</label>
-            <input type="email" id="acesso" placeholder="Digite seu e-mail" required>
+            <input type="email" id="email" placeholder="Digite seu e-mail" required>
+            <span class="mensagem-erro">Campo Vazio ou E-mail <I></I>nválido.</span>
         </div>
 
         <div class="input-group">
@@ -33,11 +34,46 @@
 
     <div class="footer">
         <p>Ainda não é morador? <a href="cadastro.html">Solicite seu cadastro</a></p>
+        <p style="margin-top: 10px;">É Síndico ou Administrador? <a href="login-admin.html">Acesse aqui</a></p>
     </div>
 </div>
 
-    <script>
-        // Aqui depois colocaremos o código para conversar com o seu Back-end!
-    </script>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        // Isso aqui é o que IMPEDE a página de recarregar e voltar pro começo!
+        e.preventDefault(); 
+
+        const email = document.getElementById('email').value;
+        const senha = document.getElementById('senha').value;
+
+        try {
+            const response = await fetch('http://localhost:3000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, senha })
+            });
+
+            const dados = await response.json();
+
+            if (response.ok) {
+                // Guarda o ID e o Nome do utilizador devolvidos pelo Banco de Dados
+                // (Suporta tanto se o servidor devolver direto ou dentro de um objeto 'usuario')
+                const idUsuario = dados.id || (dados.usuario && dados.usuario.id);
+                const nomeUsuario = dados.nome || (dados.usuario && dados.usuario.nome);
+
+                localStorage.setItem('usuarioId', idUsuario);
+                localStorage.setItem('usuarioNome', nomeUsuario);
+
+               
+                window.location.href = 'dashboard.html'; 
+            } else {
+                
+            }
+        } catch (error) {
+            console.error('Erro na conexão:', error);
+            alert('Erro ao conectar com o servidor. O Back-end está rodando?');
+        }
+    });
+</script>
 </body>
 </html>

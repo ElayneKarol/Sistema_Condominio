@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Locais - Residencial Premium</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background-color: #f3f4f6; display: flex; height: 100vh; overflow: hidden; }
+
+        /* SIDEBAR (Igual ao Painel) */
+        .sidebar { width: 280px; background-color: #111827; color: white; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 0; }
+        .profile-section { padding: 0 20px 30px 20px; border-bottom: 1px solid #374151; margin-bottom: 20px; }
+        .profile-section img { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 15px; border: 2px solid #10b981; }
+        .profile-section h2 { color: #10b981; } 
+        .nav-links { display: flex; flex-direction: column; gap: 5px; padding: 0 15px; flex: 1; }
+        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #cbd5e1; text-decoration: none; border-radius: 10px; font-size: 15px; transition: 0.3s; gap: 15px; }
+        .nav-item:hover { background-color: #374151; color: white; }
+        .nav-item.active { background-color: #064e3b; color: white; border: 1px solid #10b981; } 
+
+        /* ÁREA PRINCIPAL */
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .main-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end;}
+        .main-header h1 { color: #111827; font-size: 28px; }
+        .main-header p { color: #6b7280; margin-top: 5px; }
+
+        /* BOTOES E TABELA */
+        .btn { padding: 8px 16px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
+        .btn-primario { background: #3b82f6; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+        .btn-primario:hover { background: #2563eb; }
+        .btn-editar { background: #f59e0b; padding: 6px 12px; }
+        .btn-deletar { background: #ef4444; padding: 6px 12px; }
+
+        .table-container { background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; margin-top: 20px;}
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background-color: #f9fafb; color: #4b5563; font-weight: 600; padding: 15px 20px; border-bottom: 1px solid #e5e7eb; }
+        td { padding: 15px 20px; border-bottom: 1px solid #e5e7eb; color: #1f2937; }
+        
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .badge-disp { background: #d1fae5; color: #059669; }
+        .badge-manu { background: #fef3c7; color: #d97706; }
+
+        /* MODAIS (Formulários Ocultos) */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
+        .modal.ativo { display: flex; }
+        .modal-conteudo { background: white; padding: 30px; border-radius: 12px; width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .modal h2 { margin-bottom: 20px; color: #111827; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 14px; font-weight: bold; color: #4b5563; margin-bottom: 5px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+        .modal-acoes { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        .btn-cancelar { background: #9ca3af; color: white; }
+        .btn-salvar { background: #10b981; color: white; }
+        
+        /* Modal de Confirmação de Exclusão Específico */
+        .modal-excluir h2 { color: #ef4444; margin-bottom: 10px; }
+        .modal-excluir p { color: #4b5563; margin-bottom: 20px; font-size: 15px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div>
+            <div class="profile-section">
+                <img src="https://cdn-icons-png.flaticon.com/512/2206/2206368.png" alt="Admin">
+                <h2>Administração</h2>
+                <p>Painel de Controle</p>
+            </div>
+            <nav class="nav-links">
+                <a href="admin-dashboard.html" class="nav-item"><span>🛎️</span> Pendências</a>
+                <a href="gerenciar_usuarios.html" class="nav-item"><span>👥</span> Moradores</a>
+                <a href="gerenciar_locais.html" class="nav-item active"><span>📍</span> Locais e Áreas</a>
+                <a href="#" class="nav-item"><span>📢</span> Avisos</a>
+            </nav>
+        </div>
+        <div style="padding: 20px 15px;">
+            <a href="index.html" class="nav-item"><span>🚪</span> Sair</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="main-header">
+            <div>
+                <h1>Áreas Comuns</h1>
+                <p>Gerencie os locais disponíveis para reserva no condomínio</p>
+            </div>
+            <button class="btn btn-primario" onclick="abrirModal()">➕ Novo Local</button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome do Local</th>
+                        <th>Capacidade</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaLocais">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div class="modal" id="modalLocal">
+        <div class="modal-conteudo">
+            <h2 id="tituloModal">Cadastrar Local</h2>
+            <input type="hidden" id="localId">
+            
+            <div class="form-group">
+                <label>Nome do Local</label>
+                <input type="text" id="nome" placeholder="Ex: Salão de Festas" required>
+            </div>
+            <div class="form-group">
+                <label>Descrição</label>
+                <textarea id="descricao" rows="3" placeholder="Detalhes da área..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Capacidade (pessoas)</label>
+                <input type="number" id="capacidade" value="10" required>
+            </div>
+            <div class="form-group" id="grupoStatus" style="display: none;">
+                <label>Status</label>
+                <select id="status">
+                    <option value="DISPONIVEL">Disponível</option>
+                    <option value="MANUTENCAO">Em Manutenção</option>
+                </select>
+            </div>
+
+            <div class="modal-acoes">
+                <button class="btn btn-cancelar" onclick="fecharModal()">Cancelar</button>
+                <button class="btn btn-salvar" onclick="salvarLocal()">Salvar Local</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalConfirmarExclusao">
+        <div class="modal-conteudo modal-excluir">
+            <h2>⚠️ Confirmar Exclusão</h2>
+            <p>Tem certeza que deseja excluir o local <strong id="nomeLocalExcluir"></strong>? Ele não aparecerá mais para novas reservas.</p>
+            <input type="hidden" id="excluirLocalId">
+            
+            <div class="modal-acoes">
+                <button class="btn btn-cancelar" onclick="fecharModalExclusao()">Cancelar</button>
+                <button class="btn btn-deletar" onclick="executarDeletarLocal()">Sim, Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let locaisGlobais = [];
+
+        window.onload = carregarLocais;
+
+        // --- LISTAR (Com ordenação por nome no Front-end) ---
+        async function carregarLocais() {
+            try {
+                const res = await fetch('http://localhost:3000/api/areas');
+                locaisGlobais = await res.json();
+                
+                // Ordenação por nome em ordem alfabética (A-Z)
+                locaisGlobais.sort((a, b) => a.nome.localeCompare(b.nome));
+
+                const tbody = document.getElementById('tabelaLocais');
+                tbody.innerHTML = '';
+
+                if(locaisGlobais.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum local cadastrado.</td></tr>';
+                    return;
+                }
+
+                locaisGlobais.forEach(local => {
+                    const corBadge = local.status === 'DISPONIVEL' ? 'badge-disp' : 'badge-manu';
+                    
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${local.nome}</strong><br><small style="color:#6b7280;">${local.descricao}</small></td>
+                            <td>${local.capacidade} pessoas</td>
+                            <td><span class="badge ${corBadge}">${local.status}</span></td>
+                            <td style="display: flex; gap: 5px;">
+                                <button class="btn btn-editar" onclick="editarLocal(${local.id})">✏️ Editar</button>
+                                <button class="btn btn-deletar" onclick="abrirModalExclusao(${local.id}, '${local.nome}')">🗑️ Excluir</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Erro ao carregar locais", err);
+            }
+        }
+
+        // --- SALVAR (Cadastrar ou Editar) ---
+        async function salvarLocal() {
+            const id = document.getElementById('localId').value;
+            const dados = {
+                nome: document.getElementById('nome').value,
+                descricao: document.getElementById('descricao').value,
+                capacidade: document.getElementById('capacidade').value,
+                status: document.getElementById('status').value || 'DISPONIVEL'
+            };
+
+            const url = id ? `http://localhost:3000/api/areas/${id}` : 'http://localhost:3000/api/areas';
+            const method = id ? 'PUT' : 'POST';
+
+            await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+
+            fecharModal();
+            carregarLocais();
+        }
+
+        // --- EDITAR (Preencher Modal) ---
+        function editarLocal(id) {
+            const local = locaisGlobais.find(l => l.id === id);
+            document.getElementById('localId').value = local.id;
+            document.getElementById('nome').value = local.nome;
+            document.getElementById('descricao').value = local.descricao;
+            document.getElementById('capacidade').value = local.capacidade;
+            document.getElementById('status').value = local.status;
+            
+            document.getElementById('tituloModal').innerText = 'Editar Local';
+            document.getElementById('grupoStatus').style.display = 'block';
+            document.getElementById('modalLocal').classList.add('ativo');
+        }
+
+        // --- MODAL DE EXCLUSÃO (Abrir / Fechar) ---
+        function abrirModalExclusao(id, nome) {
+            document.getElementById('excluirLocalId').value = id;
+            document.getElementById('nomeLocalExcluir').innerText = nome;
+            document.getElementById('modalConfirmarExclusao').classList.add('ativo');
+        }
+
+        function fecharModalExclusao() {
+            document.getElementById('modalConfirmarExclusao').classList.remove('ativo');
+        }
+
+        // --- DELETAR (Soft Delete executado após confirmação do Modal) ---
+        async function executarDeletarLocal() {
+            const id = document.getElementById('excluirLocalId').value;
+            try {
+                await fetch(`http://localhost:3000/api/areas/${id}`, { method: 'DELETE' });
+                fecharModalExclusao();
+                carregarLocais(); // Recarrega ordenado
+            } catch (err) {
+                console.error("Erro ao deletar local:", err);
+            }
+        }
+
+        // Funções do Modal de Cadastro
+        function abrirModal() {
+            document.getElementById('localId').value = '';
+            document.getElementById('nome').value = '';
+            document.getElementById('descricao').value = '';
+            document.getElementById('capacidade').value = '10';
+            document.getElementById('tituloModal').innerText = 'Cadastrar Local';
+            document.getElementById('grupoStatus').style.display = 'none';
+            document.getElementById('modalLocal').classList.add('ativo');
+        }
+
+        function fecharModal() {
+            document.getElementById('modalLocal').classList.remove('ativo');
+        }
+    </script>
+</body>
+</html>

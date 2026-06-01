@@ -14,52 +14,52 @@
         .profile-section img { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 15px; border: 2px solid #10b981; }
         .profile-section h2 { color: #10b981; } 
         .nav-links { display: flex; flex-direction: column; gap: 5px; padding: 0 15px; flex: 1; }
-        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #cbd5e1; text-decoration: none; border-radius: 10px; font-size: 15px; transition: 0.3s; gap: 15px; }
-        .nav-item:hover { background-color: #374151; color: white; }
-        .nav-item.active { background-color: #064e3b; color: white; border: 1px solid #10b981; } 
+        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #9ca3af; text-decoration: none; border-radius: 8px; font-weight: 500; transition: 0.3s; }
+        .nav-item:hover, .nav-item.active { background-color: #1f2937; color: white; }
+        .logout-section { padding: 0 15px; }
+        .btn-logout { width: 100%; padding: 12px; background-color: #ef4444; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-logout:hover { background-color: #dc2626; }
 
-        /* --- ÁREA PRINCIPAL --- */
+        /* --- CONTEÚDO PRINCIPAL --- */
         .main-content { flex: 1; padding: 40px; overflow-y: auto; }
-        .main-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end;}
-        .main-header h1 { color: #111827; font-size: 28px; }
-        .main-header p { color: #6b7280; margin-top: 5px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h1 { color: #111827; font-size: 28px; }
 
-        /* --- TABELA DE MORADORES --- */
-        .table-container { background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; }
+        /* --- TABELA DE USUÁRIOS --- */
+        .table-container { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); overflow: hidden; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { background-color: #f9fafb; color: #4b5563; font-weight: 600; padding: 15px 20px; border-bottom: 1px solid #e5e7eb; }
-        td { padding: 15px 20px; border-bottom: 1px solid #e5e7eb; color: #1f2937; vertical-align: middle; }
-        tr:last-child td { border-bottom: none; }
+        th { background-color: #f9fafb; padding: 16px 24px; color: #4b5563; font-weight: 600; border-bottom: 2px solid #e5e7eb; }
+        td { padding: 16px 24px; color: #1f2937; border-bottom: 1px solid #e5e7eb; }
         tr:hover { background-color: #f9fafb; }
 
-        .info-principal { font-weight: bold; color: #111827; }
-        .info-secundaria { font-size: 13px; color: #6b7280; margin-top: 4px; display: block; }
+        /* --- BADGES DE STATUS --- */
+        .badge { padding: 6px 12px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-block; }
+        .badge.ativo { background-color: #d1fae5; color: #065f46; }
+        .badge.pendente { background-color: #fef3c7; color: #92400e; }
+        .badge.inativo { background-color: #fee2e2; color: #991b1b; }
+        .badge.recusado { background-color: #e5e7eb; color: #374151; }
 
-        /* --- BADGES E BOTÕES --- */
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; }
-        .badge-pendente { background: #fef3c7; color: #d97706; }
-        .badge-ativo { background: #d1fae5; color: #059669; }
-        .badge-inativo { background: #f3f4f6; color: #4b5563; }
-        .badge-recusado { background: #fee2e2; color: #dc2626; }
-
-        .acoes { display: flex; gap: 5px; flex-wrap: wrap; }
-        .btn { padding: 6px 12px; border-radius: 6px; border: none; font-weight: bold; font-size: 12px; cursor: pointer; color: white; transition: 0.2s; }
-        .btn-aprovar { background: #10b981; } .btn-aprovar:hover { background: #059669; }
-        .btn-recusar { background: #ef4444; } .btn-recusar:hover { background: #dc2626; }
-        .btn-bloquear { background: #f59e0b; } .btn-bloquear:hover { background: #d97706; }
-        .btn-editar { background: #3b82f6; } .btn-editar:hover { background: #2563eb; }
+        /* --- BOTÕES DE AÇÃO --- */
+        .actions-cell { display: flex; gap: 8px; }
+        .btn-action { padding: 8px 12px; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-edit { background-color: #3b82f6; color: white; }
+        .btn-edit:hover { background-color: #2563eb; }
+        .btn-approve { background-color: #10b981; color: white; }
+        .btn-approve:hover { background-color: #059669; }
+        .btn-block { background-color: #f59e0b; color: white; }
+        .btn-block:hover { background-color: #d97706; }
+        .btn-reject { background-color: #ef4444; color: white; }
+        .btn-reject:hover { background-color: #dc2626; }
 
         /* --- MODAL DE EDIÇÃO --- */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
-        .modal.ativo { display: flex; }
-        .modal-conteudo { background: white; padding: 30px; border-radius: 12px; width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .modal h2 { margin-bottom: 20px; color: #111827; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 14px; font-weight: bold; color: #4b5563; margin-bottom: 5px; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
-        .modal-acoes { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
-        .btn-cancelar { background: #9ca3af; color: white; }
-        .btn-salvar { background: #10b981; color: white; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+        .modal-overlay.ativo { display: flex; }
+        .modal-card { background: white; width: 500px; padding: 30px; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .modal-card h2 { margin-bottom: 20px; color: #111827; }
+        .form-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-size: 14px; font-weight: 500; color: #4b5563; }
+        .form-group input { padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 15px; }
+        .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; }
     </style>
 </head>
 <body>
@@ -69,14 +69,14 @@
             <div class="profile-section">
                 <img src="https://cdn-icons-png.flaticon.com/512/2206/2206368.png" alt="Admin">
                 <h2>Administração</h2>
-                <p>Painel de Controlo</p>
+                <p>Painel de Controle</p>
             </div>
 
             <nav class="nav-links">
                 <a href="admin-dashboard.html" class="nav-item"><span>🛎️</span> Pendências</a>
                 <a href="gerenciar_usuarios.html" class="nav-item active"><span>👥</span> Moradores</a>
                 <a href="gerenciar_locais.html" class="nav-item"><span>📍</span> Locais e Áreas</a>
-                <a href="#" class="nav-item"><span>📢</span> Avisos</a>
+                <a href="gerenciar_avisos.html" class="nav-item"><span>📢</span> Avisos</a>
             </nav>
         </div>
         <div style="padding: 20px 15px;">
@@ -84,155 +84,160 @@
         </div>
     </aside>
 
-    <main class="main-content">
-        <div class="main-header">
-            <div>
-                <h1>Gestão de Moradores</h1>
-                <p>Listar, editar e bloquear utilizadores registados.</p>
-            </div>
+    <div class="main-content">
+        <div class="header">
+            <h1>Gerenciamento Geral de Moradores</h1>
         </div>
 
         <div class="table-container">
             <table>
                 <thead>
                     <tr>
-                        <th>Morador</th>
-                        <th>Contacto</th>
-                        <th>Unidade</th>
-                        <th>Estado</th>
-                        <th>Ações</th>
+                        <th>Nome Completo</th>
+                        <th>E-mail</th>
+                        <th>Endereço / Apto</th>
+                        <th>Telefone</th>
+                        <th>Perfil</th>
+                        <th>Status</th>
+                        <th>Ações Disponíveis</th>
                     </tr>
                 </thead>
-                <tbody id="tabelaUsuarios">
-                    <tr><td colspan="5" style="text-align: center;">A carregar moradores...</td></tr>
-                </tbody>
+                <tbody id="listaUsuarios">
+                    </tbody>
             </table>
         </div>
-    </main>
+    </div>
 
-    <div class="modal" id="modalEditarUsuario">
-        <div class="modal-conteudo">
-            <h2>Editar Morador</h2>
+    <div id="modalEditarUsuario" class="modal-overlay">
+        <div class="modal-card">
+            <h2>Editar Dados do Morador</h2>
             <input type="hidden" id="editId">
             
             <div class="form-group">
-                <label>Nome Completo</label>
-                <input type="text" id="editNome" required>
+                <label for="editNome">Nome Completo</label>
+                <input type="text" id="editNome">
             </div>
             <div class="form-group">
-                <label>E-mail</label>
-                <input type="email" id="editEmail" required>
+                <label for="editEmail">E-mail de Acesso</label>
+                <input type="email" id="editEmail">
             </div>
             <div class="form-group">
-                <label>Telefone</label>
+                <label for="editTelefone">Telefone de Contato</label>
                 <input type="text" id="editTelefone">
             </div>
             <div class="form-group">
-                <label>Unidade / Bloco</label>
+                <label for="editEndereco">Unidade / Apartamento</label>
                 <input type="text" id="editEndereco">
             </div>
-
-            <div class="modal-acoes">
-                <button class="btn btn-cancelar" onclick="fecharModal()">Cancelar</button>
-                <button class="btn btn-salvar" onclick="salvarEdicao()">Guardar Alterações</button>
+            <div class="modal-buttons">
+                <button class="btn-action" style="background:#e5e7eb; color:#374151;" onclick="fecharModal()">Cancelar</button>
+                <button class="btn-action btn-edit" onclick="salvarEdicao()">Salvar Alterações</button>
             </div>
         </div>
     </div>
 
+    <div id="modalFeedback" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(3px);">
+        <div style="background: white; width: 400px; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; border-top: 8px solid #10b981;" id="cardFeedback">
+            <div id="iconeFeedback" style="font-size: 48px; margin-bottom: 15px;">✔️</div>
+            <h2 id="tituloFeedback" style="color: #1f2937; margin-bottom: 10px; font-size: 22px;">Sucesso!</h2>
+            <p id="mensagemFeedback" style="color: #4b5563; font-size: 15px; line-height: 1.5; margin-bottom: 25px;">Operação realizada.</p>
+            <button onclick="fecharModalFeedback()" style="background: #111827; color: white; border: none; padding: 10px 24px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; transition: 0.2s; width: 100%;">
+                Entendido
+            </button>
+        </div>
+    </div>
+
     <script>
-        let usuariosGlobais = [];
+        let usuariosArmazenados = [];
 
-        window.onload = carregarUsuarios;
+        window.onload = function() {
+            carregarUsuarios();
+        };
 
-        // --- LISTAR UTILIZADORES ---
+        // Modal de Feedback Centralizado
+        function mostrarModalFeedback(titulo, mensagem, tipo = 'sucesso') {
+            const modal = document.getElementById('modalFeedback');
+            const card = document.getElementById('cardFeedback');
+            const icone = document.getElementById('iconeFeedback');
+            const txtTitulo = document.getElementById('tituloFeedback');
+            const txtMensagem = document.getElementById('mensagemFeedback');
+
+            txtTitulo.innerText = titulo;
+            txtMensagem.innerText = mensagem;
+
+            if (tipo === 'sucesso') {
+                card.style.borderTopColor = '#10b981';
+                icone.innerText = '✔️';
+                txtTitulo.style.color = '#065f46';
+            } else if (tipo === 'aviso') {
+                card.style.borderTopColor = '#f59e0b';
+                icone.innerText = '🔒';
+                txtTitulo.style.color = '#92400e';
+            } else {
+                card.style.borderTopColor = '#ef4444';
+                icone.innerText = '⚠️';
+                txtTitulo.style.color = '#991b1b';
+            }
+            modal.style.display = 'flex';
+        }
+
+        function fecharModalFeedback() {
+            document.getElementById('modalFeedback').style.display = 'none';
+        }
+
+        // Buscar todos os usuários no servidor
         async function carregarUsuarios() {
             try {
                 const response = await fetch('http://localhost:3000/api/usuarios');
-                usuariosGlobais = await response.json();
+                usuariosArmazenados = await response.json();
+                renderizarTabela(usuariosArmazenados);
+            } catch (error) {
+                console.error("Erro ao carregar usuários:", error);
+                mostrarModalFeedback('Erro de Rede', 'Não foi possível buscar a lista de moradores.', 'erro');
+            }
+        }
+
+        function renderizarTabela(usuarios) {
+            const tbody = document.getElementById('listaUsuarios');
+            tbody.innerHTML = '';
+
+            usuarios.forEach(user => {
+                const tr = document.createElement('tr');
                 
-                // Opcional: Ordenar alfabeticamente
-                usuariosGlobais.sort((a, b) => a.nome.localeCompare(b.nome));
-
-                const tbody = document.getElementById('tabelaUsuarios');
-                tbody.innerHTML = '';
-
-                if(usuariosGlobais.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nenhum utilizador registado.</td></tr>';
-                    return;
+                let botoesAcao = `<button class="btn-action btn-edit" onclick="abrirModalEdicao(${user.id})">Editar</button> `;
+                
+                if (user.status === 'PENDENTE') {
+                    botoesAcao += `
+                        <button class="btn-action btn-approve" onclick="alterarStatus(${user.id}, 'ATIVO')">Aceitar</button>
+                        <button class="btn-action btn-reject" onclick="alterarStatus(${user.id}, 'RECUSADO')">Recusar</button>
+                    `;
+                } else if (user.status === 'ATIVO') {
+                    botoesAcao += `<button class="btn-action btn-block" onclick="alterarStatus(${user.id}, 'INATIVO')">Bloquear</button>`;
+                } else if (user.status === 'INATIVO' || user.status === 'RECUSADO') {
+                    botoesAcao += `<button class="btn-action btn-approve" onclick="alterarStatus(${user.id}, 'ATIVO')">Reativar</button>`;
                 }
 
-                usuariosGlobais.forEach(user => {
-                    let botoes = '';
-                    let badgeClass = '';
-
-                    // Define as cores do status
-                    if (user.status === 'PENDENTE') badgeClass = 'badge-pendente';
-                    else if (user.status === 'ATIVO') badgeClass = 'badge-ativo';
-                    else if (user.status === 'INATIVO') badgeClass = 'badge-inativo';
-                    else if (user.status === 'RECUSADO') badgeClass = 'badge-recusado';
-
-                    // Lógica dos botões (Bloquear, Reativar, Editar)
-                    if (user.status === 'PENDENTE') {
-                        botoes += `<button class="btn btn-aprovar" onclick="alterarStatus(${user.id}, 'ATIVO')">Aprovar</button>`;
-                        botoes += `<button class="btn btn-recusar" onclick="alterarStatus(${user.id}, 'RECUSADO')">Recusar</button>`;
-                    } else if (user.status === 'ATIVO' && user.perfil !== 'SINDICO') {
-                        // Cumprindo a regra de "Bloquear"
-                        botoes += `<button class="btn btn-bloquear" onclick="alterarStatus(${user.id}, 'INATIVO')">Bloquear</button>`;
-                    } else if (user.status === 'INATIVO' || user.status === 'RECUSADO') {
-                        botoes += `<button class="btn btn-aprovar" onclick="alterarStatus(${user.id}, 'ATIVO')">Reativar</button>`;
-                    }
-                    
-                    // O botão de Editar aparece para todos
-                    botoes += `<button class="btn btn-editar" onclick="abrirModalEdicao(${user.id})">Editar</button>`;
-
-                    // Estado a apresentar (se for INATIVO, mostra BLOQUEADO para fazer mais sentido visualmente)
-                    const statusTexto = user.status === 'INATIVO' ? 'BLOQUEADO' : user.status;
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>
-                                <span class="info-principal">${user.nome}</span>
-                                <span class="info-secundaria">CPF: ${user.cpf || 'Não informado'}</span>
-                            </td>
-                            <td>
-                                <span class="info-principal">${user.email}</span>
-                                <span class="info-secundaria">${user.telefone || ''}</span>
-                            </td>
-                            <td><span class="info-principal">${user.endereco || '-'}</span></td>
-                            <td><span class="badge ${badgeClass}">${statusTexto}</span></td>
-                            <td class="acoes">${botoes}</td>
-                        </tr>
-                    `;
-                });
-            } catch (erro) {
-                console.error('Erro ao carregar utilizadores:', erro);
-            }
+                tr.innerHTML = `
+                    <td><strong>${user.nome}</strong></td>
+                    <td>${user.email}</td>
+                    <td>${user.endereco || 'Não inf.'}</td>
+                    <td>${user.telefone || 'Não inf.'}</td>
+                    <td><span style="font-size:12px; font-weight:bold; color:#6b7280;">${user.perfil}</span></td>
+                    <td><span class="badge ${user.status.toLowerCase()}">${user.status}</span></td>
+                    <td class="actions-cell">${botoesAcao}</td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
-        // --- BLOQUEAR / ATIVAR UTILIZADOR ---
-        async function alterarStatus(id, novoStatus) {
-            const acao = novoStatus === 'INATIVO' ? 'bloquear' : 'alterar o estado de';
-            if(!confirm(`Tem a certeza que deseja ${acao} este utilizador?`)) return;
-
-            try {
-                const response = await fetch(`http://localhost:3000/api/usuarios/${id}/status`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: novoStatus })
-                });
-
-                if (response.ok) carregarUsuarios();
-            } catch (erro) {
-                console.error('Erro:', erro);
-            }
-        }
-
-        // --- EDITAR UTILIZADOR (MODAL) ---
+        // Abrir formulário preenchido para edição
         function abrirModalEdicao(id) {
-            const user = usuariosGlobais.find(u => u.id === id);
+            const user = usuariosArmazenados.find(u => u.id === id);
+            if (!user) return;
+
             document.getElementById('editId').value = user.id;
-            document.getElementById('editNome').value = user.nome;
-            document.getElementById('editEmail').value = user.email;
+            document.getElementById('editNome').value = user.nome || '';
+            document.getElementById('editEmail').value = user.email || '';
             document.getElementById('editTelefone').value = user.telefone || '';
             document.getElementById('editEndereco').value = user.endereco || '';
             
@@ -243,6 +248,7 @@
             document.getElementById('modalEditarUsuario').classList.remove('ativo');
         }
 
+        // Salvar dados do formulário de edição
         async function salvarEdicao() {
             const id = document.getElementById('editId').value;
             const dados = {
@@ -261,12 +267,45 @@
 
                 if (response.ok) {
                     fecharModal();
-                    carregarUsuarios(); // Recarrega a tabela com os novos dados
+                    mostrarModalFeedback('Perfil Atualizado', 'As alterações do morador foram salvas com sucesso!', 'sucesso');
+                    carregarUsuarios();
                 } else {
-                    alert("Erro ao guardar as alterações.");
+                    const errData = await response.json();
+                    mostrarModalFeedback('Erro ao Salvar', errData.erro || 'Não foi possível guardar as alterações.', 'erro');
                 }
             } catch (erro) {
                 console.error("Erro:", erro);
+                mostrarModalFeedback('Erro de Conexão', 'Não foi possível conectar ao servidor.', 'erro');
+            }
+        }
+
+        // Alterar status: Aceitar, Reativar, Bloquear, Recusar
+        async function alterarStatus(id, novoStatus) {
+            try {
+                const response = await fetch(`http://localhost:3000/api/usuarios/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: novoStatus })
+                });
+
+                if (response.ok) {
+                    if (novoStatus === 'ATIVO') {
+                        mostrarModalFeedback('Morador Liberado', 'O cadastro do morador está ativo e liberado no sistema!', 'sucesso');
+                    } else if (novoStatus === 'INATIVO') {
+                        mostrarModalFeedback('Morador Bloqueado', 'O morador foi desativado e não poderá acessar o sistema.', 'aviso');
+                    } else if (novoStatus === 'RECUSADO') {
+                        mostrarModalFeedback('Cadastro Recusado', 'A solicitação de cadastro foi recusada com sucesso.', 'aviso');
+                    } else {
+                        mostrarModalFeedback('Sucesso', `Status alterado para ${novoStatus} com êxito!`, 'sucesso');
+                    }
+                    carregarUsuarios();
+                } else {
+                    const errData = await response.json();
+                    mostrarModalFeedback('Erro na Operação', errData.erro || 'Falha ao atualizar o status do morador.', 'erro');
+                }
+            } catch (erro) {
+                console.error("Erro ao alterar status:", erro);
+                mostrarModalFeedback('Erro de Rede', 'Não foi possível comunicar as alterações para o servidor.', 'erro');
             }
         }
     </script>

@@ -192,38 +192,8 @@
     </aside>
 
     <main class="main-content">
-        <header class="main-header">
-            <h1>Mural de Avisos</h1>
-            <p>Fique por dentro do que acontece no Residencial Premium</p>
-        </header>
-
-        <div class="avisos-list">
-            <div class="aviso-card">
-                <div class="aviso-header">
-                    <span class="badge">Manutenção</span>
-                    <span class="aviso-date">Hoje, 08:30</span>
-                </div>
-                <h3>Limpeza da Caixa D'água</h3>
-                <p>Informamos que amanhã haverá interrupção no fornecimento de água das 08h às 12h para limpeza preventiva obrigatória de todas as caixas d'água dos blocos.</p>
-            </div>
-
-            <div class="aviso-card">
-                <div class="aviso-header">
-                    <span class="badge info">Informativo</span>
-                    <span class="aviso-date">Ontem, 14:15</span>
-                </div>
-                <h3>Nova regra para a Piscina</h3>
-                <p>Prezados moradores, lembramos que o uso da piscina aos finais de semana agora requer agendamento prévio através do sistema para evitarmos superlotação.</p>
-            </div>
-
-             <div class="aviso-card">
-                <div class="aviso-header">
-                    <span class="badge info">Informativo</span>
-                    <span class="aviso-date">10 de Maio</span>
-                </div>
-                <h3>Dedetização das Áreas Comuns</h3>
-                <p>A dedetização semestral foi concluída com sucesso nas áreas de lazer, garagem e hall de entrada dos blocos A e B.</p>
-            </div>
+        <div class="avisos-grid" id="lista-avisos">
+            <p style="color: #6b7280;">A carregar os avisos do condomínio...</p>
         </div>
     </main>
 
@@ -239,6 +209,61 @@
         function sair() {
             localStorage.clear(); // Limpa as credenciais por segurança ao deslogar
             window.location.href = 'index.html';
+        }
+
+        // Executa automaticamente quando o morador entra no painel
+        window.onload = () => {
+            // Atualiza o nome na barra lateral (que já tínhamos feito)
+            const nomeSalvo = localStorage.getItem('usuarioNome');
+            if (nomeSalvo) {
+                document.getElementById('nome-usuario').innerText = `Olá, ${nomeSalvo}`;
+            }
+            
+            // Chama a função para buscar os avisos
+            carregarAvisos();
+        };
+
+        // Função que vai ao banco de dados buscar os avisos do Síndico
+        async function carregarAvisos() {
+            const container = document.getElementById('lista-avisos');
+            
+            try {
+                const resposta = await fetch('http://localhost:3000/api/avisos');
+                const avisos = await resposta.json();
+
+                if (avisos.length === 0) {
+                    container.innerHTML = '<p style="color: #6b7280; text-align: center; grid-column: 1 / -1;">Nenhum aviso publicado pela administração no momento.</p>';
+                    return;
+                }
+
+                container.innerHTML = ''; // Limpa a mensagem de "A carregar..."
+
+                avisos.forEach(aviso => {
+                    // Formatar a data
+                    const dataObj = new Date(aviso.data_criacao);
+                    const dataFormatada = dataObj.toLocaleDateString('pt-BR');
+                    
+                    // Ajustar a cor da etiqueta dependendo do tipo de aviso
+                    let classeBadge = 'info'; // Azul por padrão
+                    if (aviso.tipo === 'Alerta' || aviso.tipo === 'Manutenção') classeBadge = 'alerta'; // Laranja ou Vermelho
+                    if (aviso.tipo === 'Urgente') classeBadge = 'urgente'; // Vermelho
+
+                    // Adiciona o aviso na tela do morador usando as classes CSS que você já tem!
+                    container.innerHTML += `
+                        <div class="aviso-card">
+                            <div class="aviso-header">
+                                <span class="badge ${classeBadge}" style="background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">${aviso.tipo}</span>
+                                <span class="aviso-date" style="font-size: 12px; color: #9ca3af;">${dataFormatada}</span>
+                            </div>
+                            <h3 style="color: #1f2937; margin-bottom: 10px; font-size: 18px; margin-top: 10px;">${aviso.titulo}</h3>
+                            <p style="color: #4b5563; font-size: 14px; line-height: 1.6;">${aviso.mensagem}</p>
+                        </div>
+                    `;
+                });
+            } catch (erro) {
+                console.error("Erro ao carregar avisos:", erro);
+                container.innerHTML = '<p style="color: red;">Erro ao tentar carregar o mural de avisos.</p>';
+            }
         }
     </script>
 </body>

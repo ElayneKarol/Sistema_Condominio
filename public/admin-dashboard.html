@@ -131,7 +131,7 @@
                 <a href="admin-dashboard.html" class="nav-item active"><span>🛎️</span> Pendências</a>
                 <a href="gerenciar_usuarios.html" class="nav-item"><span>👥</span> Moradores</a>
                 <a href="gerenciar_locais.html" class="nav-item"><span>📍</span> Locais e Áreas</a>
-                <a href="#" class="nav-item"><span>📢</span> Avisos</a>
+                <a href="gerenciar_avisos.html" class="nav-item"><span>📢</span> Avisos</a>
             </nav>
         </div>
         <div style="padding: 20px 15px;">
@@ -152,6 +152,40 @@
         </div>
     </main>
 
+    <div class="gestao-reservas-box" style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-top: 30px;">
+    <h2 style="color: #1f2937; margin-bottom: 20px; font-size: 20px;">🗓️ Cronograma Geral de Ocupação (Todas as Reservas)</h2>
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="background: #f3f4f6; border-bottom: 2px solid #e5e7eb;">
+                    <th style="padding: 12px; color: #4b5563;">Data</th>
+                    <th style="padding: 12px; color: #4b5563;">Morador / Localização</th>
+                    <th style="padding: 12px; color: #4b5563;">Área</th>
+                    <th style="padding: 12px; color: #4b5563;">Horário</th>
+                    <th style="padding: 12px; color: #4b5563;">Status</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-cronograma-reservas">
+                <tr>
+                    <td colspan="5" style="padding: 15px; text-align: center; color: #9ca3af;">Carregando histórico...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div id="modalFeedback" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(3px);">
+    <div style="background: white; width: 400px; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; border-top: 8px solid #10b981;" id="cardFeedback">
+        <div id="iconeFeedback" style="font-size: 48px; margin-bottom: 15px;">✔️</div>
+        
+        <h2 id="tituloFeedback" style="color: #1f2937; margin-bottom: 10px; font-size: 22px;">Sucesso!</h2>
+        
+        <p id="mensagemFeedback" style="color: #4b5563; font-size: 15px; line-height: 1.5; margin-bottom: 25px;">A operação foi concluída com êxito.</p>
+        
+        <button onclick="fecharModalFeedback()" style="background: #111827; color: white; border: none; padding: 10px 24px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; transition: 0.2s; width: 100%;">
+            Entendido
+        </button>
+    </div>
+</div>
     <script>
         window.onload = carregarPendencias;
 
@@ -272,14 +306,86 @@
             else alert('Erro ao atualizar usuário.');
         }
 
+       // Função para Aprovar/Recusar RESERVAS (Atualizada)
+// Novas funções para controlar a abertura e fechamento do Modal
+        function mostrarModalFeedback(titulo, mensagem, tipo = 'sucesso') {
+            const modal = document.getElementById('modalFeedback');
+            const card = document.getElementById('cardFeedback');
+            const icone = document.getElementById('iconeFeedback');
+            const txtTitulo = document.getElementById('tituloFeedback');
+            const txtMensagem = document.getElementById('mensagemFeedback');
+
+            txtTitulo.innerText = titulo;
+            txtMensagem.innerText = mensagem;
+
+            if (tipo === 'sucesso') {
+                card.style.borderTopColor = '#10b981'; // Verde para sucesso
+                icone.innerText = '✔️';
+                txtTitulo.style.color = '#065f46';
+            } else {
+                card.style.borderTopColor = '#ef4444'; // Vermelho para erro
+                icone.innerText = '⚠️';
+                txtTitulo.style.color = '#991b1b';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function fecharModalFeedback() {
+            document.getElementById('modalFeedback').style.display = 'none';
+        }
+
+        // Função para Aprovar/Recusar USUÁRIOS (Atualizada com Modal)
+        async function processarUsuario(id, status) {
+            try {
+                const resposta = await fetch(`http://localhost:3000/api/usuarios/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: status })
+                });
+
+                const dados = await resposta.json();
+
+                if (resposta.ok) {
+                    mostrarModalFeedback('Sucesso!', `O morador foi definido como ${status} com êxito.`, 'sucesso');
+                    carregarPendencias();
+                } else {
+                    mostrarModalFeedback('Erro no Servidor', dados.erro || 'Erro ao atualizar usuário.', 'erro');
+                }
+            } catch (erro) {
+                console.error("Erro na conexão:", erro);
+                mostrarModalFeedback('Erro de Rede', 'Não foi possível conectar ao servidor.', 'erro');
+            }
+        }
+
+        // Função para Aprovar/Recusar RESERVAS (Atualizada com Modal e atualização do Cronograma)
         async function processarReserva(id, status) {
-            const reply = await fetch(`http://localhost:3000/api/reservas/${id}/status`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status: status })
-            });
-            if (reply.ok) carregarPendencias();
-            else alert('Erro ao atualizar reserva.');
+            try {
+                const resposta = await fetch(`http://localhost:3000/api/reservas/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: status })
+                });
+
+                const dados = await resposta.json();
+
+                if (resposta.ok) {
+                    mostrarModalFeedback('Reserva Atualizada', dados.mensagem || `Reserva definida como ${status}!`, 'sucesso');
+                    
+                    // 1. Recarrega os cards de pendências na tela
+                    carregarPendencias();
+                    
+                    // 2. Tenta atualizar o cronograma se a função global dele existir na página
+                    if (typeof carregarCronogramaGeral === 'function') {
+                        carregarCronogramaGeral();
+                    }
+                } else {
+                    mostrarModalFeedback('Não foi possível processar', dados.erro || 'Erro ao atualizar reserva.', 'erro');
+                }
+            } catch (erro) {
+                console.error("Erro na conexão:", erro);
+                mostrarModalFeedback('Erro de Rede', 'Não foi possível conectar ao servidor.', 'erro');
+            }
         }
 
         // Nova função para processar as aprovações de perfil direto do painel unificado
@@ -293,6 +399,98 @@
                 alert('Erro ao processar alteração de perfil.');
             }
         }
+
+        async function carregarCronogramaGeral() {
+    const tabela = document.getElementById('tabela-cronograma-reservas');
+    
+    try {
+        const resposta = await fetch('http://localhost:3000/api/admin/reservas-geral');
+        const dados = await resposta.json();
+
+        if (dados.length === 0) {
+            tabela.innerHTML = `<tr><td colspan="5" style="padding: 20px; text-align: center; color: #6b7280;">Nenhuma reserva registrada no sistema.</td></tr>`;
+            return;
+        }
+
+        tabela.innerHTML = ''; // Limpa a linha de carregamento
+
+        dados.forEach(reserva => {
+            const dataFormatada = new Date(reserva.data_reserva).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+            
+            // Define o estilo visual da badge de status da reserva
+            let corStatus = '#f59e0b'; // Amarelo PENDENTE
+            if(reserva.status === 'APROVADA') corStatus = '#10b981'; // Verde
+            if(reserva.status === 'RECUSADA') corStatus = '#ef4444'; // Vermelho
+
+            tabela.innerHTML += `
+                <tr style="border-bottom: 1px solid #f3f4f6; font-size: 14px;">
+                    <td style="padding: 12px; font-weight: bold; color: #1f2937;">${dataFormatada}</td>
+                    <td style="padding: 12px; color: #4b5563;">${reserva.morador} <br><small style="color:#9ca3af;">${reserva.endereco}</small></td>
+                    <td style="padding: 12px; color: #1f2937; font-weight: 500;">${reserva.area}</td>
+                    <td style="padding: 12px; color: #4b5563;">${reserva.horario}</td>
+                    <td style="padding: 12px;">
+                        <span style="background: ${corStatus}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">
+                            ${reserva.status}
+                        </span>
+                    </td>
+                </tr>
+            `;
+        });
+    } catch (erro) {
+        console.error("Erro ao carregar cronograma:", erro);
+        tabela.innerHTML = `<tr><td colspan="5" style="padding: 20px; text-align: center; color: red;">Erro ao carregar dados do servidor.</td></tr>`;
+    }
+}
+
+// Certifique-se de chamar a função quando o painel do administrador abrir
+window.addEventListener('DOMContentLoaded', () => {
+    // Se você já tiver outras funções no onload, adicione esta junto com elas:
+    carregarCronogramaGeral();
+});
+// FUNÇÃO QUE SUBSTITUI O ALERT() NATIVO POR UM MODAL INCRÍVEL
+function mostrarModalFeedback(titulo, mensagem, tipo = 'sucesso') {
+    const modal = document.getElementById('modalFeedback');
+    const card = document.getElementById('cardFeedback');
+    const icone = document.getElementById('iconeFeedback');
+    const txtTitulo = document.getElementById('tituloFeedback');
+    const txtMensagem = document.getElementById('mensagemFeedback');
+
+    // Configura os textos
+    txtTitulo.innerText = titulo;
+    txtMensagem.innerText = mensagem;
+
+    // Configura o visual com base no tipo (sucesso ou erro)
+    if (tipo === 'sucesso') {
+        card.style.borderTopColor = '#10b981'; // Verde
+        icone.innerText = '✔️';
+        txtTitulo.style.color = '#065f46';
+    } else {
+        card.style.borderTopColor = '#ef4444'; // Vermelho
+        icone.innerText = '⚠️';
+        txtTitulo.style.color = '#991b1b';
+    }
+
+    // Exibe o modal centralizado na tela
+    modal.style.display = 'flex';
+}
+
+// FUNÇÃO PARA FECHAR O MODAL
+function fecharModalFeedback() {
+    document.getElementById('modalFeedback').style.display = 'none';
+}
     </script>
+<div id="modalFeedback" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(3px);">
+        <div style="background: white; width: 400px; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; border-top: 8px solid #10b981;" id="cardFeedback">
+            <div id="iconeFeedback" style="font-size: 48px; margin-bottom: 15px;">✔️</div>
+            
+            <h2 id="tituloFeedback" style="color: #1f2937; margin-bottom: 10px; font-size: 22px;">Sucesso!</h2>
+            
+            <p id="mensagemFeedback" style="color: #4b5563; font-size: 15px; line-height: 1.5; margin-bottom: 25px;">A operação foi concluída com êxito.</p>
+            
+            <button onclick="fecharModalFeedback()" style="background: #111827; color: white; border: none; padding: 10px 24px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; transition: 0.2s; width: 100%;">
+                Entendido
+            </button>
+        </div>
+    </div>
 </body>
 </html>

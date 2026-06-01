@@ -10,7 +10,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    /* MODIFICAÇÕES AQUI: */
+    min-height: 100vh;    /* Mudado de height para min-height */
+    padding: 40px 20px;   /* Adicionado para garantir a distância das bordas da tela */
 }
 
 .login-box {
@@ -98,8 +100,6 @@ button {
     text-decoration: none;
     font-weight: bold;
 }
-
-
 
 /* Oculta a mensagem de erro por padrão */
 .mensagem-erro {

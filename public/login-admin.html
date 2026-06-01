@@ -7,7 +7,7 @@
 </head>
 <body>
     <div class="login-box">
-        <img src="img/hotel-logo.avif" alt="Residencial Premium" class="logo-img">
+    <img src="img/logo.png" alt="Residencial Premium" class="logo-img">
         
         <h1>ÁREA RESTRITA</h1>
         <p class="subtitle">Acesso exclusivo para Síndico e Administração</p>
@@ -48,18 +48,19 @@
                 const dados = await response.json();
 
                 if (response.ok) {
-                    // VERIFICAÇÃO DE SEGURANÇA: Checa se quem logou é realmente Admin ou Síndico
-                    if (dados.usuario.perfil === 'ADMIN' || dados.usuario.perfil === 'SINDICO') {
-                        alert(`Bem-vindo, ${dados.usuario.nome}! Abrindo painel administrativo...`);
-                        window.location.href = 'admin-dashboard.html';
-                    } else {
-                        alert('Acesso negado: Este e-mail pertence a um Morador. Por favor, use a tela inicial.');
-                        window.location.href = 'index.html';
-                    }
+    // VERIFICAÇÃO DE SEGURANÇA: Checa se quem logou é realmente Admin ou Síndico
+                if (dados.usuario.perfil === 'ADMIN' || dados.usuario.perfil === 'SINDICO') {
+                    // Alerta removido daqui para entrar direto e sem mensagens
+                    window.location.href = 'admin-dashboard.html';
                 } else {
-                    alert(dados.erro || 'Erro ao fazer login');
+                    alert('Acesso negado: Este e-mail pertence a um Morador. Por favor, use a tela inicial.');
+                    window.location.href = 'index.html';
                 }
-            } catch (error) {
+            } else {
+                alert(dados.erro || 'Erro ao fazer login');
+            }
+            } 
+            catch (error) {
                 alert('Erro ao conectar com o servidor.');
             }
         });

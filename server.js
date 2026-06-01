@@ -301,6 +301,31 @@ app.delete('/api/areas/:id', (req, res) => {
 // RESERVAS (Regras de negócio unificadas)
 // ==========================================
 
+// Rota para buscar horários já ocupados/solicitados de uma área em uma data específica
+app.get('/api/reservas/ocupadas', (req, res) => {
+    const { area_id, data_reserva } = req.query;
+
+    if (!area_id || !data_reserva) {
+        return res.status(400).json({ erro: 'Faltam parâmetros obrigatórios (area_id e data_reserva).' });
+    }
+
+    // Busca horários que já foram solicitados (PENDENTE) ou aceitos (APROVADA)
+    const query = `
+        SELECT horario FROM Reserva 
+        WHERE area_id = ? AND data_reserva = ? AND status IN ('PENDENTE', 'APROVADA')
+    `;
+
+    db.query(query, [area_id, data_reserva], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ erro: 'Erro ao buscar horários ocupados.' });
+        }
+        
+        // Extrai apenas as strings dos horários para um array simples (ex: ["08:00 às 09:00", "14:00 às 15:00"])
+        const horariosOcupados = results.map(row => row.horario);
+        res.json(horariosOcupados);
+    });
+});
 // CADASTRAR/SOLICITAR NOVA RESERVA
 app.post('/api/reservas', (req, res) => {
     const { usuario_id, area_id, data_reserva, horario } = req.body;

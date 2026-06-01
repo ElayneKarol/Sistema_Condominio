@@ -8,18 +8,77 @@
 
         body { background-color: #e5e7eb; display: flex; height: 100vh; overflow: hidden; }
 
-        /* --- SIDEBAR MORADOR --- */
-        .sidebar { width: 280px; background-color: #0f172a; color: white; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 0; }
-        .profile-section { padding: 0 20px 30px 20px; border-bottom: 1px solid #1e293b; margin-bottom: 20px; }
-        .profile-section img { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 15px; border: 2px solid #3b82f6; }
-        .profile-section h2 { font-size: 18px; color: #f8fafc; }
-        .profile-section p { font-size: 14px; color: #94a3b8; }
-        .nav-links { display: flex; flex-direction: column; gap: 5px; padding: 0 15px; flex: 1; }
-        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #cbd5e1; text-decoration: none; border-radius: 8px; font-weight: 500; transition: 0.3s; }
-        .nav-item:hover, .nav-item.active { background-color: #1e293b; color: white; border-left: 4px solid #3b82f6; }
-        .logout-section { padding: 0 15px; }
-        .btn-logout { width: 100%; padding: 12px; background-color: #ef4444; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-logout:hover { background-color: #dc2626; }
+        /* --- MENU LATERAL (SIDEBAR) - IGUAL AO INÍCIO --- */
+        .sidebar {
+            width: 280px;
+            background-color: #0f172a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 0;
+        }
+
+        .profile-section {
+            padding: 0 20px 30px 20px;
+            border-bottom: 1px solid #1e293b;
+            margin-bottom: 20px;
+        }
+
+        .profile-section img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 2px solid #3b82f6;
+        }
+
+        .profile-section h2 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .profile-section p {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 0 15px;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: 0.3s;
+            gap: 15px;
+        }
+
+        .nav-item:hover {
+            background-color: #1e293b;
+            color: white;
+        }
+
+        .nav-item.active {
+            background-color: #1e3a8a;
+            color: white;
+            border: 1px solid #3b82f6;
+        }
+
+        .logout-btn {
+            margin: 0 15px;
+            border-top: 1px solid #1e293b;
+            padding-top: 20px;
+        }
 
         /* --- CONTEÚDO PRINCIPAL --- */
         .main-content { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; }
@@ -70,27 +129,30 @@
         .form-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
         .form-group label { font-size: 14px; font-weight: 500; color: #475569; }
         .form-group input, .form-group select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; background: white; }
+        .form-group select:disabled { background-color: #f1f5f9; cursor: not-allowed; }
         .modal-buttons { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; }
         .btn-action { padding: 10px 18px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-    </style>
+</style>
 </head>
 <body>
 
     <div class="sidebar">
         <div>
             <div class="profile-section">
-                <img src="https://via.placeholder.com/60" alt="Morador">
+            <img src="https://media.istockphoto.com/id/1495088043/pt/vetorial/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=S7d8ImMSfoLBMCaEJOffTVua003OAl2xUnzOsuKIwek=" alt="Avatar">
                 <h2 id="nomeUsuario">Carregando...</h2>
                 <p>Morador(a)</p>
             </div>
             <nav class="nav-links">
-                <a href="dashboard.html" class="nav-item"><span>🏠</span> Início</a>
-                <a href="reservas.html" class="nav-item active"><span>📅</span> Nova Reserva</a>
-                <a href="perfil.html" class="nav-item "><span>👤</span> Meu Perfil</a>
+                <a href="dashboard.html" class="nav-item"><span></span> Início</a>
+                <a href="reservas.html" class="nav-item active"><span></span> Nova Reserva</a>
+                <a href="perfil.html" class="nav-item "><span></span> Meu Perfil</a>
             </nav>
         </div>
-        <div style="padding: 20px 15px;">
-            <a href="index.html" class="nav-item" onclick="localStorage.clear();"><span>🚪</span> Sair</a>
+        <div class="logout-btn">
+            <a href="#" class="nav-item" onclick="sair()">
+                <span>🚪</span> Sair
+            </a>
         </div>
     </div>
 
@@ -135,15 +197,13 @@
             
             <div class="form-group">
                 <label for="reservaData">Escolha a Data</label>
-                <input type="date" id="reservaData">
+                <input type="date" id="reservaData" onchange="buscarHorariosLivres()">
             </div>
 
             <div class="form-group">
-                <label for="reservaHorario">Período Disponível</label>
-                <select id="reservaHorario">
-                    <option value="Manhã (08:00 às 12:00)">Manhã (08:00 às 12:00)</option>
-                    <option value="Tarde (13:00 às 17:00)">Tarde (13:00 às 17:00)</option>
-                    <option value="Noite (18:00 às 22:00)">Noite (18:00 às 22:00)</option>
+                <label for="reservaHorario">Horários Disponíveis (1h por sessão)</label>
+                <select id="reservaHorario" disabled>
+                    <option value="">Selecione uma data primeiro...</option>
                 </select>
             </div>
 
@@ -166,14 +226,12 @@
     </div>
 
     <script>
-        // CORREÇÃO AQUI: Lê exatamente as chaves que o teu index.html gravou!
+        // Lê exatamente as chaves que o index.html grava no login
         const USUARIO_LOGADO_ID = parseInt(localStorage.getItem('usuarioId')) || 1;
         const USUARIO_LOGADO_NOME = localStorage.getItem('usuarioNome') || "Morador de Testes";
 
         window.onload = function() {
-            // Aplica o nome do morador real na barra lateral
             document.getElementById('nomeUsuario').innerText = USUARIO_LOGADO_NOME;
-            
             carregarAreasComuns();
             carregarMinhasReservas();
             
@@ -182,8 +240,10 @@
             document.getElementById('reservaData').min = hoje;
         };
 
-        // --- CONTROLE DOS MODAIS ---
-        // ... o resto do teu código de reservas continua exatamente igual abaixo ...
+        function sair() {
+            localStorage.clear(); // Limpa as credenciais por segurança ao deslogar
+            window.location.href = 'index.html';
+        }
 
         // --- CONTROLE DOS MODAIS ---
         function mostrarModalFeedback(titulo, mensagem, tipo = 'sucesso') {
@@ -226,7 +286,7 @@
                 btnMinhas.classList.add('active');
                 document.getElementById('paneLocais').classList.remove('active');
                 document.getElementById('paneMinhas').classList.add('active');
-                carregarMinhasReservas(); // Força atualização ao mudar de aba
+                carregarMinhasReservas();
             }
         }
 
@@ -234,6 +294,12 @@
             document.getElementById('modalAreaId').value = id;
             document.getElementById('modalReservaTitulo').innerText = `Reservar: ${nome}`;
             document.getElementById('modalReserva').classList.add('ativo');
+            
+            // Reseta o estado do select de horários
+            const selectHorario = document.getElementById('reservaHorario');
+            selectHorario.innerHTML = '<option value="">Selecione uma data primeiro...</option>';
+            selectHorario.disabled = true;
+            document.getElementById('reservaData').value = '';
         }
 
         function fecharModal() {
@@ -241,9 +307,64 @@
             document.getElementById('reservaData').value = '';
         }
 
+        // --- FILTRAGEM DINÂMICA DE HORÁRIOS DE 1 EM 1 HORA ---
+        async function buscarHorariosLivres() {
+            const areaId = document.getElementById('modalAreaId').value;
+            const dataVal = document.getElementById('reservaData').value;
+            const selectHorario = document.getElementById('reservaHorario');
+
+            if (!dataVal) {
+                selectHorario.innerHTML = '<option value="">Selecione uma data primeiro...</option>';
+                selectHorario.disabled = true;
+                return;
+            }
+
+            selectHorario.innerHTML = '<option value="">Buscando horários disponíveis...</option>';
+            selectHorario.disabled = true;
+
+            // Grade completa de 1 em 1 hora (das 08:00 às 22:00)
+            const gradeHorarios = [
+                "08:00 às 09:00", "09:00 às 10:00", "10:00 às 11:00", "11:00 às 12:00",
+                "12:00 às 13:00", "13:00 às 14:00", "14:00 às 15:00", "15:00 às 16:00",
+                "16:00 às 17:00", "17:00 às 18:00", "18:00 às 19:00", "19:00 às 20:00",
+                "20:00 às 21:00", "21:00 às 22:00"
+            ];
+
+            try {
+                // Requisição para a nova rota que busca as ocupadas do dia
+                const response = await fetch(`http://localhost:3000/api/reservas/ocupadas?area_id=${areaId}&data_reserva=${dataVal}`);
+                const horariosOcupados = await response.json(); // Retorna array ex: ["09:00 às 10:00"]
+
+                // Filtra retirando da grade os horários já ocupados por qualquer morador
+                const horariosDisponiveis = gradeHorarios.filter(horario => !horariosOcupados.includes(horario));
+
+                selectHorario.innerHTML = '';
+
+                if (horariosDisponiveis.length === 0) {
+                    selectHorario.innerHTML = '<option value="">Todos os horários estão esgotados para este dia.</option>';
+                    selectHorario.disabled = true;
+                } else {
+                    const optDefault = document.createElement('option');
+                    optDefault.value = "";
+                    optDefault.innerText = "Escolha um horário livre...";
+                    selectHorario.appendChild(optDefault);
+
+                    horariosDisponiveis.forEach(horario => {
+                        const option = document.createElement('option');
+                        option.value = horario;
+                        option.innerText = horario;
+                        selectHorario.appendChild(option);
+                    });
+                    selectHorario.disabled = false;
+                }
+            } catch (err) {
+                console.error(err);
+                selectHorario.innerHTML = '<option value="">Erro ao carregar horários do servidor.</option>';
+            }
+        }
+
         /* --- API INTERFACE --- */
 
-        // 1. Carregar as Áreas do condomínio cadastradas no Banco
         async function carregarAreasComuns() {
             try {
                 const response = await fetch('http://localhost:3000/api/areas');
@@ -279,7 +400,6 @@
             }
         }
 
-        // 2. Enviar pedido de nova reserva ao banco de dados
         async function enviarSolicitacaoReserva() {
             const areaId = document.getElementById('modalAreaId').value;
             const dataVal = document.getElementById('reservaData').value;
@@ -290,10 +410,15 @@
                 return;
             }
 
+            if (!horarioVal) {
+                mostrarModalFeedback('Horário Obrigatório', 'Por favor, selecione um horário disponível.', 'erro');
+                return;
+            }
+
             const dados = {
                 usuario_id: USUARIO_LOGADO_ID,
                 area_id: areaId,
-                data_reserva: dataVal, // Envia 'AAAA-MM-DD' nativo direto
+                data_reserva: dataVal,
                 horario: horarioVal
             };
 
@@ -319,7 +444,6 @@
             }
         }
 
-        // 3. Carregar o histórico de reservas pertencentes apenas ao usuário logado
         async function carregarMinhasReservas() {
             try {
                 const response = await fetch(`http://localhost:3000/api/reservas/usuario/${USUARIO_LOGADO_ID}`);
@@ -358,7 +482,6 @@
             }
         }
 
-        // 4. Cancelar uma reserva ativa do morador
         async function cancelarMinhaReserva(id) {
             try {
                 const response = await fetch(`http://localhost:3000/api/reservas/${id}/cancelar`, {

@@ -7,13 +7,38 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
         body { background-color: #f3f4f6; display: flex; height: 100vh; overflow: hidden; }
 
-        /* SIDEBAR (Igual ao Painel) */
-        .sidebar { width: 280px; background-color: #111827; color: white; display: flex; flex-direction: column; justify-content: space-between; padding: 20px 0; }
-        .profile-section { padding: 0 20px 30px 20px; border-bottom: 1px solid #374151; margin-bottom: 20px; }
-        .profile-section img { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 15px; border: 2px solid #10b981; }
+        /* --- SIDEBAR ADMIN (IGUAL A PENDÊNCIAS) --- */
+        .sidebar {
+            width: 280px;
+            background-color: #111827; 
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 0;
+        }
+
+        .profile-section {
+            padding: 0 20px 30px 20px;
+            border-bottom: 1px solid #374151;
+            margin-bottom: 20px;
+        }
+
+        .profile-section img {
+            width: 60px; height: 60px; border-radius: 50%;
+            margin-bottom: 15px; border: 2px solid #10b981; 
+        }
+
         .profile-section h2 { color: #10b981; } 
+
         .nav-links { display: flex; flex-direction: column; gap: 5px; padding: 0 15px; flex: 1; }
-        .nav-item { display: flex; align-items: center; padding: 12px 15px; color: #cbd5e1; text-decoration: none; border-radius: 10px; font-size: 15px; transition: 0.3s; gap: 15px; }
+
+        .nav-item {
+            display: flex; align-items: center; padding: 12px 15px;
+            color: #cbd5e1; text-decoration: none; border-radius: 10px;
+            font-size: 15px; transition: 0.3s; gap: 15px;
+        }
+
         .nav-item:hover { background-color: #374151; color: white; }
         .nav-item.active { background-color: #064e3b; color: white; border: 1px solid #10b981; } 
 
@@ -54,22 +79,22 @@
         /* Modal de Confirmação de Exclusão Específico */
         .modal-excluir h2 { color: #ef4444; margin-bottom: 10px; }
         .modal-excluir p { color: #4b5563; margin-bottom: 20px; font-size: 15px; line-height: 1.5; }
-    </style>
+</style>
 </head>
 <body>
 
     <aside class="sidebar">
         <div>
             <div class="profile-section">
-                <img src="https://cdn-icons-png.flaticon.com/512/2206/2206368.png" alt="Admin">
+            <img src="https://media.istockphoto.com/id/1495088043/pt/vetorial/user-profile-icon-avatar-or-person-icon-profile-picture-portrait-symbol-default-portrait.jpg?s=612x612&w=0&k=20&c=S7d8ImMSfoLBMCaEJOffTVua003OAl2xUnzOsuKIwek=" alt="Avatar">
                 <h2>Administração</h2>
                 <p>Painel de Controle</p>
             </div>
             <nav class="nav-links">
-                <a href="admin-dashboard.html" class="nav-item"><span>🛎️</span> Pendências</a>
-                <a href="gerenciar_usuarios.html" class="nav-item"><span>👥</span> Moradores</a>
-                <a href="gerenciar_locais.html" class="nav-item active"><span>📍</span> Locais e Áreas</a>
-                <a href="gerenciar_avisos.html" class="nav-item"><span>📢</span> Avisos</a>
+                <a href="admin-dashboard.html" class="nav-item"><span></span> Pendências</a>
+                <a href="gerenciar_usuarios.html" class="nav-item"><span></span> Moradores</a>
+                <a href="gerenciar_locais.html" class="nav-item active"><span></span> Locais e Áreas</a>
+                <a href="gerenciar_avisos.html" class="nav-item"><span></span> Avisos</a>
             </nav>
         </div>
         <div style="padding: 20px 15px;">
